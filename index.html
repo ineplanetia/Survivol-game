@@ -3,47 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>3D Выживание (База)</title>
+    <title>3D Выживание (Оптимизация)</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; -webkit-user-select: none; }
         body, html { width: 100%; height: 100%; overflow: hidden; background: #87CEEB; font-family: sans-serif; touch-action: none; }
         canvas { display: block; width: 100%; height: 100%; }
 
-        /* Интерфейс */
+        /* Верхняя панель инвентаря */
         #hud {
             position: absolute; top: 15px; left: 15px;
-            background: rgba(0, 0, 0, 0.5); color: white;
-            padding: 10px 15px; border-radius: 10px; font-size: 16px;
-            pointer-events: none;
+            background: rgba(0, 0, 0, 0.6); color: white;
+            padding: 8px 14px; border-radius: 10px; font-size: 15px;
+            pointer-events: none; border: 1px solid rgba(255,255,255,0.2);
+            z-index: 10;
         }
+
+        /* Прицел по центру */
         #crosshair {
             position: absolute; top: 50%; left: 50%;
-            width: 8px; height: 8px; background: rgba(255, 255, 255, 0.8);
+            width: 6px; height: 6px; background: rgba(255, 255, 255, 0.8);
             border-radius: 50%; transform: translate(-50%, -50%);
-            pointer-events: none;
+            pointer-events: none; border: 1px solid rgba(0,0,0,0.5);
         }
-        #take-btn {
-            display: none; position: absolute; bottom: 40px; right: 40px;
-            padding: 15px 25px; background: #ff9800; color: white;
-            border: 2px solid white; border-radius: 12px; font-size: 18px; font-weight: bold;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.4); z-index: 10;
-        }
-        #take-btn:active { transform: scale(0.95); background: #e68900; }
 
-        /* Визуал джойстика */
+        /* 3D-подпись над предметом (всплывающий стилизованный текст) */
+        #item-label {
+            display: none; position: absolute;
+            background: rgba(20, 20, 20, 0.85); color: #ffcc00;
+            padding: 5px 12px; border-radius: 6px; font-size: 14px; font-weight: bold;
+            transform: translate(-50%, -100%); pointer-events: none;
+            border: 1px solid #ff9800; box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+            white-space: nowrap; z-index: 10;
+            transition: transform 0.05s linear;
+        }
+
+        /* Визуал левого джойстика */
         #joy-base {
-            display: none; position: absolute; width: 100px; height: 100px;
-            background: rgba(255, 255, 255, 0.2); border: 2px solid rgba(255, 255, 255, 0.5);
+            display: none; position: absolute; width: 110px; height: 110px;
+            background: rgba(255, 255, 255, 0.15); border: 2px solid rgba(255, 255, 255, 0.4);
             border-radius: 50%; transform: translate(-50%, -50%); pointer-events: none;
         }
         #joy-stick {
-            position: absolute; top: 50%; left: 50%; width: 40px; height: 40px;
+            position: absolute; top: 50%; left: 50%; width: 45px; height: 45px;
             background: rgba(255, 255, 255, 0.7); border-radius: 50%;
-            transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%); box-shadow: 0 2px 5px rgba(0,0,0,0.3);
         }
+
+        /* Подсказка снизу */
         #hint {
-            position: absolute; bottom: 10px; left: 15px; color: rgba(255,255,255,0.8);
-            font-size: 12px; pointer-events: none; text-shadow: 1px 1px 2px black;
+            position: absolute; bottom: 8px; left: 15px; color: rgba(255,255,255,0.7);
+            font-size: 11px; pointer-events: none; text-shadow: 1px 1px 2px black;
         }
     </style>
 </head>
@@ -51,51 +60,52 @@
 
 <div id="hud">🪵 Дерево: <span id="wood">0</span> | 🪨 Камень: <span id="stone">0</span></div>
 <div id="crosshair"></div>
-<button id="take-btn">Взять</button>
+<div id="item-label">🪨 Камень</div>
+
 <div id="joy-base"><div id="joy-stick"></div></div>
-<div id="hint">Левая часть — ходить | Правая — камера</div>
+<div id="hint">Левая половина — ходьба | Правая половина — обзор (наведи на предмет для подбора)</div>
 
 <!-- Подключаем Three.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
 <script>
-    // 1. НАСТРОЙКА СЦЕНЫ И КАМЕРЫ
+    // 1. СЦЕНА И КАМЕРА
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x87CEEB); // Голубое небо
-    scene.fog = new THREE.Fog(0x87CEEB, 15, 65);  // Лёгкий туман вдалеке
+    scene.background = new THREE.Color(0x87CEEB);
+    scene.fog = new THREE.Fog(0x87CEEB, 15, 60);
 
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
-    camera.position.set(0, 1.7, 0); // Рост игрока 1.7м
-    camera.rotation.order = 'YXZ';  // Чтобы камера вращалась правильно без завалов
+    camera.position.set(0, 1.7, 0);
+    camera.rotation.order = 'YXZ';
 
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // Оптимизация под экран телефона
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     document.body.appendChild(renderer.domElement);
 
     // 2. СВЕТ
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
-    scene.add(ambientLight);
+    scene.add(new THREE.AmbientLight(0xffffff, 0.6));
     const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
     dirLight.position.set(20, 40, 20);
     scene.add(dirLight);
 
     // 3. ЗЕМЛЯ
-    const groundGeo = new THREE.PlaneGeometry(150, 150);
-    const groundMat = new THREE.MeshLambertMaterial({ color: 0x4caf50 });
-    const ground = new THREE.Mesh(groundGeo, groundMat);
+    const ground = new THREE.Mesh(
+        new THREE.PlaneGeometry(150, 150),
+        new THREE.MeshLambertMaterial({ color: 0x4caf50 })
+    );
     ground.rotation.x = -Math.PI / 2;
     scene.add(ground);
 
-    // 4. СПАВН РЕСУРСОВ (Дерево и Камень)
+    // 4. СПАВН РЕСУРСОВ (С УВЕЛИЧЕННЫМ ХИТБОКСОМ)
     const items = [];
-    const woodGeo = new THREE.BoxGeometry(0.8, 0.4, 0.4);
+    const woodGeo = new THREE.BoxGeometry(0.9, 0.5, 0.5);
     const woodMat = new THREE.MeshLambertMaterial({ color: 0x8d5524 });
-    const stoneGeo = new THREE.DodecahedronGeometry(0.4);
+    const stoneGeo = new THREE.DodecahedronGeometry(0.5);
     const stoneMat = new THREE.MeshLambertMaterial({ color: 0x808080 });
 
     function spawnResources() {
-        for (let i = 0; i < 30; i++) {
+        for (let i = 0; i < 35; i++) {
             const isWood = Math.random() > 0.5;
             const mesh = new THREE.Mesh(isWood ? woodGeo : stoneGeo, isWood ? woodMat : stoneMat);
             mesh.position.set(
@@ -104,14 +114,20 @@
                 (Math.random() - 0.5) * 60
             );
             mesh.rotation.y = Math.random() * Math.PI;
-            mesh.userData = { type: isWood ? 'wood' : 'stone' };
+            
+            // Задаем тип и русское название для красивой плашки
+            mesh.userData = { 
+                type: isWood ? 'wood' : 'stone',
+                name: isWood ? '🪵 Дерево' : '🪨 Камень'
+            };
+            
             scene.add(mesh);
             items.push(mesh);
         }
     }
     spawnResources();
 
-    // 5. УПРАВЛЕНИЕ (СЕНСОРНОЕ: ДЖОЙСТИК + КАМЕРА)
+    // 5. УПРАВЛЕНИЕ (ДЖОЙСТИК СЛЕВА, ОБЗОР СПРАВА)
     let moveInput = { x: 0, z: 0 };
     let yaw = 0, pitch = 0;
     let joyTouchId = null, lookTouchId = null;
@@ -122,7 +138,6 @@
 
     window.addEventListener('touchstart', (e) => {
         for (let touch of e.changedTouches) {
-            // Левая половина экрана -> Джойстик
             if (touch.clientX < window.innerWidth / 2 && joyTouchId === null) {
                 joyTouchId = touch.identifier;
                 joyStart = { x: touch.clientX, y: touch.clientY };
@@ -130,9 +145,7 @@
                 joyBase.style.left = touch.clientX + 'px';
                 joyBase.style.top = touch.clientY + 'px';
                 joyStick.style.transform = 'translate(-50%, -50%)';
-            } 
-            // Правая половина экрана -> Поворот камеры
-            else if (touch.clientX >= window.innerWidth / 2 && lookTouchId === null) {
+            } else if (touch.clientX >= window.innerWidth / 2 && lookTouchId === null) {
                 lookTouchId = touch.identifier;
                 lookLast = { x: touch.clientX, y: touch.clientY };
             }
@@ -142,7 +155,7 @@
     window.addEventListener('touchmove', (e) => {
         for (let touch of e.changedTouches) {
             if (touch.identifier === joyTouchId) {
-                const maxDist = 40;
+                const maxDist = 45;
                 let dx = touch.clientX - joyStart.x;
                 let dy = touch.clientY - joyStart.y;
                 const dist = Math.hypot(dx, dy);
@@ -161,7 +174,7 @@
 
                 yaw -= dx * 0.005;
                 pitch -= dy * 0.005;
-                pitch = Math.max(-Math.PI / 2.2, Math.min(Math.PI / 2.2, pitch)); // Ограничение верха/низа
+                pitch = Math.max(-Math.PI / 2.2, Math.min(Math.PI / 2.2, pitch));
             }
         }
     });
@@ -179,35 +192,20 @@
         }
     });
 
-    // 6. ПОДБОР ПРЕДМЕТОВ И ИНВЕНТАРЬ
+    // 6. ИНВЕНТАРЬ И АВТОПОДБОР ПРИ НАВЕДЕНИИ
     let inventory = { wood: 0, stone: 0 };
-    let nearestItem = null;
-    const takeBtn = document.getElementById('take-btn');
+    const itemLabel = document.getElementById('item-label');
+    const raycaster = new THREE.Raycaster();
+    const centerScreen = new THREE.Vector2(0, 0); // Центр экрана (где прицел)
 
-    takeBtn.addEventListener('touchstart', (e) => {
-        e.stopPropagation(); // Чтобы нажатие кнопки не крутило камеру
-        if (nearestItem) {
-            inventory[nearestItem.userData.type]++;
-            document.getElementById('wood').innerText = inventory.wood;
-            document.getElementById('stone').innerText = inventory.stone;
-
-            scene.remove(nearestItem);
-            items.splice(items.indexOf(nearestItem), 1);
-            nearestItem = null;
-            takeBtn.style.display = 'none';
-        }
-    });
-
-    // 7. ИГРОВОЙ ЦИКЛ (FPS)
     const speed = 0.12;
     function animate() {
         requestAnimationFrame(animate);
 
-        // Применяем поворот камеры
         camera.rotation.y = yaw;
         camera.rotation.x = pitch;
 
-        // Движение относительно взгляда игрока
+        // Плавное движение
         if (moveInput.x !== 0 || moveInput.z !== 0) {
             const forwardX = -Math.sin(yaw);
             const forwardZ = -Math.cos(yaw);
@@ -218,27 +216,50 @@
             camera.position.z += (forwardZ * -moveInput.z + rightZ * moveInput.x) * speed;
         }
 
-        // Поиск ближайшего ресурса в радиусе 2.5 метров
-        nearestItem = null;
-        let minDist = 2.5;
-        for (let item of items) {
-            const dist = Math.hypot(camera.position.x - item.position.x, camera.position.z - item.position.z);
-            if (dist < minDist) {
-                minDist = dist;
-                nearestItem = item;
+        // Проверяем, на что смотрит центр экрана (Raycast)
+        raycaster.setFromCamera(centerScreen, camera);
+        const intersects = raycaster.intersectObjects(items);
+
+        let targetedItem = null;
+        if (intersects.length > 0) {
+            const hit = intersects[0];
+            // Проверяем расстояние (чтобы подбирать только вблизи, в радиусе 3 метров)
+            const dist = camera.position.distanceTo(hit.object.position);
+            if (dist < 3.0) {
+                targetedItem = hit.object;
             }
         }
-        takeBtn.style.display = nearestItem ? 'block' : 'none';
+
+        if (targetedItem) {
+            // Показываем стильную плашку над предметом
+            itemLabel.innerText = "⚡ Взять: " + targetedItem.userData.name;
+            itemLabel.style.display = 'block';
+
+            // Переводим 3D-координаты предмета в координаты на экране телефона
+            const tempVector = targetedItem.position.clone();
+            tempVector.project(camera);
+            const x = (tempVector.x *  .5 + .5) * window.innerWidth;
+            const y = (tempVector.y * -.5 + .5) * window.innerHeight;
+            itemLabel.style.left = x + 'px';
+            itemLabel.style.top = (y - 30) + 'px';
+
+            // АВТОПОДБОР: как только игрок навёл прицел и подошёл близко — предмет забирается в инвентарь!
+            inventory[targetedItem.userData.type]++;
+            document.getElementById('wood').innerText = inventory.wood;
+            document.getElementById('stone').innerText = inventory.stone;
+
+            scene.remove(targetedItem);
+            items.splice(items.indexOf(targetedItem), 1);
+        } else {
+            itemLabel.style.display = 'none';
+        }
 
         renderer.render(scene, camera);
     }
 
-    // Адаптация при повороте экрана
-    window.addEventListener('resize', () => {
-        camera.aspect = window.innerWidth / window.innerHeight;
-        camera.updateProjectionMatrix();
-        renderer.setSize(window.innerWidth, window.innerHeight);
-    });
+    // Адаптация под поворот экрана
+    window.innerWidth = window.innerWidth;
+    window.innerHeight = window.innerHeight;
 
     animate();
 </script>
