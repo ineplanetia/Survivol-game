@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>3D Выживание (Оптимизация)</title>
+    <title>3D Выживание (Стиль Oxide / Free Fire)</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; -webkit-user-select: none; }
-        body, html { width: 100%; height: 100%; overflow: hidden; background: #87CEEB; font-family: sans-serif; touch-action: none; }
+        body, html { width: 100%; height: 100%; overflow: hidden; background: #1a1a1a; font-family: sans-serif; touch-action: none; }
         canvas { display: block; width: 100%; height: 100%; }
 
-        /* Верхняя панель инвентаря */
-        #hud {
-            position: absolute; top: 15px; left: 15px;
-            background: rgba(0, 0, 0, 0.6); color: white;
-            padding: 8px 14px; border-radius: 10px; font-size: 15px;
+        /* Верхняя мини-статистика */
+        #top-hud {
+            position: absolute; top: 10px; left: 10px;
+            background: rgba(0, 0, 0, 0.7); color: white;
+            padding: 6px 12px; border-radius: 6px; font-size: 13px;
             pointer-events: none; border: 1px solid rgba(255,255,255,0.2);
             z-index: 10;
         }
@@ -21,27 +21,46 @@
         /* Прицел по центру */
         #crosshair {
             position: absolute; top: 50%; left: 50%;
-            width: 6px; height: 6px; background: rgba(255, 255, 255, 0.8);
+            width: 8px; height: 8px; background: rgba(255, 255, 255, 0.9);
             border-radius: 50%; transform: translate(-50%, -50%);
-            pointer-events: none; border: 1px solid rgba(0,0,0,0.5);
+            pointer-events: none; border: 1px solid rgba(0,0,0,0.8);
         }
 
-        /* 3D-подпись над предметом (всплывающий стилизованный текст) */
-        #item-label {
-            display: none; position: absolute;
-            background: rgba(20, 20, 20, 0.85); color: #ffcc00;
-            padding: 5px 12px; border-radius: 6px; font-size: 14px; font-weight: bold;
-            transform: translate(-50%, -100%); pointer-events: none;
-            border: 1px solid #ff9800; box-shadow: 0 2px 8px rgba(0,0,0,0.5);
-            white-space: nowrap; z-index: 10;
-            transition: transform 0.05s linear;
+        /* Квадратик-лут меню (как на скрине из игр) при наведении на предмет */
+        #loot-box {
+            display: none; position: absolute; top: 58%; left: 50%;
+            transform: translate(-50%, 0);
+            background: rgba(30, 30, 30, 0.9); border: 2px solid #ff9800;
+            border-radius: 10px; padding: 10px 15px; text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.6); z-index: 20;
         }
+        #loot-title { color: #ffcc00; font-size: 14px; font-weight: bold; margin-bottom: 8px; }
+        #loot-btn {
+            background: #ff9800; color: white; border: none;
+            padding: 8px 16px; border-radius: 6px; font-size: 14px; font-weight: bold;
+        }
+        #loot-btn:active { background: #e68900; transform: scale(0.95); }
 
-        /* Визуал левого джойстика */
+        /* Нижний хотбар инвентаря (как в выживачах) */
+        #hotbar {
+            position: absolute; bottom: 15px; left: 50%;
+            transform: translateX(-50%);
+            display: flex; gap: 8px; z-index: 10;
+            pointer-events: none;
+        }
+        .slot {
+            width: 50px; height: 50px; background: rgba(0, 0, 0, 0.6);
+            border: 2px solid rgba(255, 255, 255, 0.3); border-radius: 8px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            color: white; font-size: 11px; font-weight: bold;
+        }
+        .slot span { font-size: 13px; color: #ffcc00; }
+
+        /* Джойстик слева */
         #joy-base {
             display: none; position: absolute; width: 110px; height: 110px;
             background: rgba(255, 255, 255, 0.15); border: 2px solid rgba(255, 255, 255, 0.4);
-            border-radius: 50%; transform: translate(-50%, -50%); pointer-events: none;
+            border-radius: 50%; transform: translate(-50%, -50%); pointer-events: none; z-index: 10;
         }
         #joy-stick {
             position: absolute; top: 50%; left: 50%; width: 45px; height: 45px;
@@ -49,21 +68,33 @@
             transform: translate(-50%, -50%); box-shadow: 0 2px 5px rgba(0,0,0,0.3);
         }
 
-        /* Подсказка снизу */
         #hint {
-            position: absolute; bottom: 8px; left: 15px; color: rgba(255,255,255,0.7);
+            position: absolute; top: 10px; right: 10px; color: rgba(255,255,255,0.7);
             font-size: 11px; pointer-events: none; text-shadow: 1px 1px 2px black;
         }
     </style>
 </head>
 <body>
 
-<div id="hud">🪵 Дерево: <span id="wood">0</span> | 🪨 Камень: <span id="stone">0</span></div>
+<div id="top-hud">FPS / Сурвайвал База</div>
 <div id="crosshair"></div>
-<div id="item-label">🪨 Камень</div>
+<div id="hint">Левая половина — ходьба | Правая — обзор</div>
+
+<!-- Квадратик подбора предмета -->
+<div id="loot-box">
+    <div id="loot-title">🪨 Камень</div>
+    <button id="loot-btn">ВЗЯТЬ</button>
+</div>
+
+<!-- Нижний инвентарь (Хотбар) -->
+<div id="hotbar">
+    <div class="slot">🪵<span id="wood-count">0</span></div>
+    <div class="slot">🪨<span id="stone-count">0</span></div>
+    <div class="slot">3</div>
+    <div class="slot">4</div>
+</div>
 
 <div id="joy-base"><div id="joy-stick"></div></div>
-<div id="hint">Левая половина — ходьба | Правая половина — обзор (наведи на предмет для подбора)</div>
 
 <!-- Подключаем Three.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -97,7 +128,7 @@
     ground.rotation.x = -Math.PI / 2;
     scene.add(ground);
 
-    // 4. СПАВН РЕСУРСОВ (С УВЕЛИЧЕННЫМ ХИТБОКСОМ)
+    // 4. СПАВН РЕСУРСОВ
     const items = [];
     const woodGeo = new THREE.BoxGeometry(0.9, 0.5, 0.5);
     const woodMat = new THREE.MeshLambertMaterial({ color: 0x8d5524 });
@@ -114,13 +145,10 @@
                 (Math.random() - 0.5) * 60
             );
             mesh.rotation.y = Math.random() * Math.PI;
-            
-            // Задаем тип и русское название для красивой плашки
             mesh.userData = { 
                 type: isWood ? 'wood' : 'stone',
                 name: isWood ? '🪵 Дерево' : '🪨 Камень'
             };
-            
             scene.add(mesh);
             items.push(mesh);
         }
@@ -144,7 +172,7 @@
                 joyBase.style.display = 'block';
                 joyBase.style.left = touch.clientX + 'px';
                 joyBase.style.top = touch.clientY + 'px';
-                joyStick.style.transform = 'translate(-50%, -50%)';
+                joyStick.style.transform = 'translate(-50%, -50px)';
             } else if (touch.clientX >= window.innerWidth / 2 && lookTouchId === null) {
                 lookTouchId = touch.identifier;
                 lookLast = { x: touch.clientX, y: touch.clientY };
@@ -192,11 +220,30 @@
         }
     });
 
-    // 6. ИНВЕНТАРЬ И АВТОПОДБОР ПРИ НАВЕДЕНИИ
+    // 6. МЕХАНИКА ЛУТА И ИНВЕНТАРЬ
     let inventory = { wood: 0, stone: 0 };
-    const itemLabel = document.getElementById('item-label');
+    let currentLootItem = null;
+    const lootBox = document.getElementById('loot-box');
+    const lootTitle = document.getElementById('loot-title');
+    const lootBtn = document.getElementById('loot-btn');
+
     const raycaster = new THREE.Raycaster();
-    const centerScreen = new THREE.Vector2(0, 0); // Центр экрана (где прицел)
+    const centerScreen = new THREE.Vector2(0, 0);
+
+    // Нажатие на кнопку «ВЗЯТЬ» в квадратике
+    lootBtn.addEventListener('touchstart', (e) => {
+        e.stopPropagation();
+        if (currentLootItem) {
+            inventory[currentLootItem.userData.type]++;
+            document.getElementById('wood-count').innerText = inventory.wood;
+            document.getElementById('stone-count').innerText = inventory.stone;
+
+            scene.remove(currentLootItem);
+            items.splice(items.indexOf(currentLootItem), 1);
+            currentLootItem = null;
+            lootBox.style.display = 'none';
+        }
+    });
 
     const speed = 0.12;
     function animate() {
@@ -205,7 +252,7 @@
         camera.rotation.y = yaw;
         camera.rotation.x = pitch;
 
-        // Плавное движение
+        // Плавное движение ходьбы
         if (moveInput.x !== 0 || moveInput.z !== 0) {
             const forwardX = -Math.sin(yaw);
             const forwardZ = -Math.cos(yaw);
@@ -216,50 +263,35 @@
             camera.position.z += (forwardZ * -moveInput.z + rightZ * moveInput.x) * speed;
         }
 
-        // Проверяем, на что смотрит центр экрана (Raycast)
+        // Проверяем, на что смотрит центр прицела
         raycaster.setFromCamera(centerScreen, camera);
         const intersects = raycaster.intersectObjects(items);
 
-        let targetedItem = null;
+        let found = null;
         if (intersects.length > 0) {
             const hit = intersects[0];
-            // Проверяем расстояние (чтобы подбирать только вблизи, в радиусе 3 метров)
-            const dist = camera.position.distanceTo(hit.object.position);
-            if (dist < 3.0) {
-                targetedItem = hit.object;
+            if (camera.position.distanceTo(hit.object.position) < 3.5) {
+                found = hit.object;
             }
         }
 
-        if (targetedItem) {
-            // Показываем стильную плашку над предметом
-            itemLabel.innerText = "⚡ Взять: " + targetedItem.userData.name;
-            itemLabel.style.display = 'block';
-
-            // Переводим 3D-координаты предмета в координаты на экране телефона
-            const tempVector = targetedItem.position.clone();
-            tempVector.project(camera);
-            const x = (tempVector.x *  .5 + .5) * window.innerWidth;
-            const y = (tempVector.y * -.5 + .5) * window.innerHeight;
-            itemLabel.style.left = x + 'px';
-            itemLabel.style.top = (y - 30) + 'px';
-
-            // АВТОПОДБОР: как только игрок навёл прицел и подошёл близко — предмет забирается в инвентарь!
-            inventory[targetedItem.userData.type]++;
-            document.getElementById('wood').innerText = inventory.wood;
-            document.getElementById('stone').innerText = inventory.stone;
-
-            scene.remove(targetedItem);
-            items.splice(items.indexOf(targetedItem), 1);
+        if (found) {
+            currentLootItem = found;
+            lootTitle.innerText = found.userData.name;
+            lootBox.style.display = 'block'; // Показываем тот самый квадратик лута!
         } else {
-            itemLabel.style.display = 'none';
+            currentLootItem = null;
+            lootBox.style.display = 'none';
         }
 
         renderer.render(scene, camera);
     }
 
-    // Адаптация под поворот экрана
-    window.innerWidth = window.innerWidth;
-    window.innerHeight = window.innerHeight;
+    window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+    });
 
     animate();
 </script>
