@@ -13,18 +13,26 @@
       height: 100%;
       overflow: hidden;
       background: #87ceeb;
+      color: #fff;
       font-family: system-ui, sans-serif;
-      color: white;
-      touch-action: none;
       user-select: none;
+      touch-action: none;
     }
 
     canvas { display: block; }
 
+    button {
+      color: white;
+      font: inherit;
+      font-weight: 700;
+      border: 0;
+      cursor: pointer;
+      touch-action: none;
+    }
+
     #ui {
       position: fixed;
       inset: 0;
-      z-index: 2;
       pointer-events: none;
     }
 
@@ -32,8 +40,8 @@
       position: absolute;
       left: 50%;
       top: 50%;
-      width: 12px;
-      height: 12px;
+      width: 14px;
+      height: 14px;
       transform: translate(-50%, -50%);
     }
 
@@ -41,56 +49,47 @@
     #crosshair::after {
       content: "";
       position: absolute;
-      background: #fff;
+      background: white;
+      border-radius: 2px;
       box-shadow: 0 1px 3px #222;
     }
 
     #crosshair::before {
       width: 2px;
-      height: 12px;
-      left: 5px;
+      height: 14px;
+      left: 6px;
     }
 
     #crosshair::after {
       height: 2px;
-      width: 12px;
-      top: 5px;
+      width: 14px;
+      top: 6px;
     }
 
     #targetBox {
       position: absolute;
       top: calc(50% + 24px);
       left: 50%;
-      transform: translateX(-50%);
       display: none;
-      pointer-events: auto;
-      background: #17231ee8;
+      min-width: 150px;
+      padding: 8px 12px;
+      transform: translateX(-50%);
       border: 1px solid #ffffff55;
       border-radius: 10px;
-      padding: 8px 12px;
+      background: #17231ee8;
       text-align: center;
-      min-width: 150px;
+      pointer-events: auto;
     }
 
     #targetName {
-      font-weight: 700;
       margin-bottom: 5px;
-    }
-
-    button {
-      border: 0;
-      border-radius: 9px;
-      color: white;
       font-weight: 700;
-      background: #468e52;
-      padding: 9px 14px;
-      cursor: pointer;
-      font-family: inherit;
     }
 
-    button:active {
-      filter: brightness(1.2);
-      transform: scale(.97);
+    #interact {
+      padding: 8px 15px;
+      border-radius: 9px;
+      background: #468e52;
     }
 
     #joystick {
@@ -98,81 +97,91 @@
       display: none;
       width: 150px;
       height: 150px;
-      border-radius: 50%;
-      border: 2px solid #ffffff70;
-      background: #16231d55;
       transform: translate(-50%, -50%);
+      border: 2px solid #ffffff70;
+      border-radius: 50%;
+      background: #16231d55;
       pointer-events: none;
     }
 
     #stick {
       position: absolute;
-      left: 50%;
       top: 50%;
+      left: 50%;
       width: 66px;
       height: 66px;
       margin: -33px;
+      border: 2px solid #fff;
       border-radius: 50%;
       background: #ffffffaa;
-      border: 2px solid white;
     }
 
     #jump {
-      pointer-events: auto;
       position: absolute;
       right: 24px;
-      bottom: 28px;
-      width: 86px;
-      height: 86px;
+      bottom: 26px;
+      display: grid;
+      width: 84px;
+      height: 84px;
+      place-items: center;
+      border: 3px solid #ffffffbb;
       border-radius: 50%;
-      background: radial-gradient(circle at 35% 28%, #70c4ff, #2674b6 70%);
-      border: 3px solid #ffffffcc;
-      box-shadow: 0 5px 0 #174b77, 0 7px 15px #0006;
-      font-size: 14px;
-      line-height: 1.1;
-      text-shadow: 0 1px 2px #174b77;
-      transition: filter .12s, box-shadow .12s, transform .12s;
+      background: linear-gradient(145deg, #70c4ff, #287ac0);
+      box-shadow:
+        0 6px 0 #174d7d,
+        0 8px 18px #0006,
+        inset 0 3px 8px #ffffff66;
+      font-size: 13px;
+      text-shadow: 0 1px 2px #174d7d;
+      pointer-events: auto;
     }
 
     #jump:active {
-      transform: translateY(4px) scale(.97);
-      box-shadow: 0 1px 0 #174b77, 0 3px 8px #0006;
+      transform: translateY(4px);
+      box-shadow:
+        0 2px 0 #174d7d,
+        0 4px 12px #0006,
+        inset 0 3px 8px #ffffff66;
     }
 
-    #hit {
-      pointer-events: auto;
+    #jumpArrow {
+      display: block;
+      margin-bottom: -2px;
+      font-size: 24px;
+      line-height: 22px;
+    }
+
+    #inventoryButton {
       position: absolute;
-      right: 120px;
-      bottom: 34px;
-      width: 70px;
-      height: 70px;
-      border-radius: 50%;
-      display: none;
-      background: #a56a2dcc;
-      border: 2px solid #ffffffaa;
+      top: 14px;
+      right: 14px;
+      padding: 9px 13px;
+      border: 1px solid #ffffff55;
+      border-radius: 9px;
+      background: #17231dcc;
+      pointer-events: auto;
     }
 
     #hotbar {
       position: absolute;
+      bottom: 12px;
       left: 50%;
-      bottom: 14px;
-      transform: translateX(-50%);
       display: flex;
-      gap: 5px;
+      gap: 4px;
+      transform: translateX(-50%);
       pointer-events: auto;
     }
 
     .slot {
-      width: 53px;
-      height: 53px;
-      flex: 0 0 auto;
-      background: #15231dd9;
+      position: relative;
+      display: grid;
+      width: 48px;
+      height: 48px;
+      place-items: center;
       border: 2px solid #ffffff66;
       border-radius: 8px;
-      display: grid;
-      place-items: center;
-      position: relative;
-      font-size: 12px;
+      background: #15231dd9;
+      font-size: 19px;
       text-align: center;
       cursor: pointer;
     }
@@ -187,63 +196,56 @@
       right: 4px;
       bottom: 1px;
       font-size: 11px;
-    }
-
-    #inventoryButton {
-      pointer-events: auto;
-      position: absolute;
-      top: 14px;
-      right: 14px;
-      background: #17231dcc;
+      text-shadow: 0 1px 3px #000;
     }
 
     #hint {
       position: absolute;
       top: 14px;
       left: 50%;
-      transform: translateX(-50%);
-      background: #17231dbb;
-      border-radius: 8px;
       padding: 7px 10px;
+      transform: translateX(-50%);
+      border-radius: 8px;
+      background: #17231dbb;
       font-size: 12px;
       white-space: nowrap;
     }
 
     #toast {
       position: absolute;
-      left: 50%;
       top: 18%;
-      transform: translateX(-50%);
-      background: #17231de8;
-      border-radius: 9px;
-      padding: 9px 14px;
+      left: 50%;
       display: none;
+      padding: 9px 14px;
+      transform: translateX(-50%);
+      border-radius: 9px;
+      background: #17231de8;
     }
 
     #modal {
-      display: none;
       position: absolute;
       inset: 0;
-      pointer-events: auto;
-      background: #0009;
+      display: none;
       align-items: center;
       justify-content: center;
+      background: #0009;
+      pointer-events: auto;
     }
 
     #panel {
-      background: #1c2a22;
-      border: 1px solid #ffffff55;
-      border-radius: 12px;
-      width: min(94vw, 680px);
+      width: min(94vw, 520px);
       max-height: 92vh;
       overflow: auto;
       padding: 14px;
+      border: 1px solid #ffffff55;
+      border-radius: 12px;
+      background: #1c2a22;
     }
 
     #panelHeader {
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
       gap: 12px;
       margin-bottom: 12px;
     }
@@ -253,66 +255,58 @@
       font-size: 18px;
     }
 
+    #closeModal {
+      padding: 8px 12px;
+      border-radius: 8px;
+      background: #80504b;
+    }
+
     #playerGrid {
       display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 7px;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 6px;
     }
 
     #playerGrid .slot {
       width: 100%;
-      height: 58px;
+      height: 54px;
     }
 
-    #closeModal { background: #80504b; }
+    #rotate {
+      display: none;
+    }
 
     @media (orientation: portrait) {
       #rotate {
-        display: flex;
         position: fixed;
         inset: 0;
         z-index: 20;
-        background: #14221b;
+        display: flex;
         align-items: center;
         justify-content: center;
-        text-align: center;
         padding: 30px;
+        background: #14221b;
+        text-align: center;
         font-size: 20px;
-      }
-    }
-
-    @media (orientation: landscape) {
-      #rotate { display: none; }
-    }
-
-    @media (max-width: 700px) {
-      #hotbar { gap: 3px; }
-      #hotbar .slot {
-        width: 43px;
-        height: 46px;
       }
     }
 
     @media (max-height: 430px) {
       #jump {
-        width: 68px;
-        height: 68px;
         right: 16px;
-        bottom: 16px;
+        bottom: 17px;
+        width: 70px;
+        height: 70px;
       }
 
-      #hit {
-        width: 58px;
-        height: 58px;
-        right: 96px;
-        bottom: 21px;
-      }
-
-      #hotbar { bottom: 8px; }
+      #hotbar { bottom: 7px; }
+      .slot { width: 42px; height: 42px; }
       #hint { top: 7px; }
-      #hotbar .slot {
-        height: 42px;
-      }
+    }
+
+    @media (max-width: 700px) {
+      #hotbar { gap: 3px; }
+      .slot { width: 42px; height: 44px; }
     }
   </style>
 </head>
@@ -324,21 +318,26 @@
 
     <div id="targetBox">
       <div id="targetName"></div>
-      <button id="interact">Подобрать</button>
+      <button id="interact">Взять</button>
     </div>
 
-    <div id="joystick"><div id="stick"></div></div>
-    <button id="hit">Удар</button>
-    <button id="jump">ПРЫЖОК</button>
+    <div id="joystick">
+      <div id="stick"></div>
+    </div>
+
+    <button id="jump">
+      <span><span id="jumpArrow">⬆</span>ПРЫЖОК</span>
+    </button>
+
     <button id="inventoryButton">Инвентарь</button>
     <div id="hotbar"></div>
-    <div id="hint">Левая четверть — движение · правая часть — обзор</div>
+    <div id="hint">Слева — движение · справа — обзор</div>
     <div id="toast"></div>
 
     <div id="modal">
       <div id="panel">
         <div id="panelHeader">
-          <h2>Инвентарь</h2>
+          <h2>Инвентарь · 30 слотов</h2>
           <button id="closeModal">Закрыть</button>
         </div>
         <div id="playerGrid"></div>
@@ -354,6 +353,7 @@
     scene.fog = new THREE.Fog(0x87ceeb, 35, 100);
 
     const camera = new THREE.PerspectiveCamera(70, innerWidth / innerHeight, 0.1, 150);
+
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
     renderer.setSize(innerWidth, innerHeight);
@@ -386,15 +386,9 @@
       grounded: true
     };
 
-    const interactables = [];
+    const pickups = [];
     const raycaster = new THREE.Raycaster();
     raycaster.far = 3.5;
-
-    let currentTarget = null;
-    let selectedPlayer = 0;
-    let modalOpen = false;
-    let toastTimer;
-    let walkTime = 0;
 
     const playerItems = Array(30).fill(null);
     const itemNames = {
@@ -406,14 +400,20 @@
       stone: "🪨"
     };
 
+    let currentTarget = null;
+    let selectedSlot = -1;
+    let modalOpen = false;
+    let toastTimer;
+    let walkTime = 0;
+
     function notify(text) {
-      const el = document.getElementById("toast");
-      el.textContent = text;
-      el.style.display = "block";
+      const toast = document.getElementById("toast");
+      toast.textContent = text;
+      toast.style.display = "block";
       clearTimeout(toastTimer);
       toastTimer = setTimeout(() => {
-        el.style.display = "none";
-      }, 1500);
+        toast.style.display = "none";
+      }, 1400);
     }
 
     function addToInventory(type, amount) {
@@ -421,31 +421,30 @@
 
       for (const slot of playerItems) {
         if (slot && slot.type === type && slot.count < 99) {
-          const n = Math.min(left, 99 - slot.count);
-          slot.count += n;
-          left -= n;
-          if (!left) break;
+          const added = Math.min(left, 99 - slot.count);
+          slot.count += added;
+          left -= added;
+          if (left === 0) break;
         }
       }
 
       while (left > 0) {
-        const index = playerItems.findIndex(x => x === null);
-        if (index < 0) break;
+        const emptyIndex = playerItems.findIndex(slot => slot === null);
+        if (emptyIndex === -1) break;
 
-        const n = Math.min(left, 99);
-        playerItems[index] = { type, count: n };
-        left -= n;
+        const added = Math.min(left, 99);
+        playerItems[emptyIndex] = { type, count: added };
+        left -= added;
       }
 
       renderHotbar();
       renderInventory();
-      updateHeldItem();
 
       if (left > 0) notify("Инвентарь заполнен");
       return amount - left;
     }
 
-    // Большие деревья остаются декорацией: добывать их нельзя.
+    // Большие деревья и камни — только декорации. Их нельзя добывать.
     function makeTree(x, z) {
       const root = new THREE.Group();
       root.position.set(x, 0, z);
@@ -456,6 +455,7 @@
       );
       trunk.position.y = 1.05;
       trunk.castShadow = true;
+      trunk.receiveShadow = true;
       root.add(trunk);
 
       const leaves = new THREE.Mesh(
@@ -469,8 +469,7 @@
       scene.add(root);
     }
 
-    // Большие камни тоже остаются декорацией и не добываются.
-    function makeRock(x, z) {
+    function makeLargeRock(x, z) {
       const root = new THREE.Group();
       root.position.set(x, 0, z);
 
@@ -481,225 +480,168 @@
       rock.position.y = 0.55;
       rock.scale.set(1.2, 0.8, 1);
       rock.castShadow = true;
+      rock.receiveShadow = true;
       root.add(rock);
 
       scene.add(root);
     }
 
-    function makePickup(type, x, z) {
+    function makePickup(type, x, z, rotation = Math.random() * Math.PI) {
       const root = new THREE.Group();
-      root.position.set(x, 0, z);
+      root.position.set(x, 0.06, z);
+      root.rotation.y = rotation;
 
-      if (type === "stone") {
-        const pebble = new THREE.Mesh(
-          new THREE.DodecahedronGeometry(0.23, 0),
-          new THREE.MeshStandardMaterial({ color: 0x92999b, roughness: 1 })
+      if (type === "wood") {
+        const branch = new THREE.Mesh(
+          new THREE.CylinderGeometry(0.045, 0.065, 0.68, 6),
+          new THREE.MeshStandardMaterial({ color: 0x82572f })
         );
-        pebble.position.set(0, 0.16, 0);
-        pebble.scale.set(1.25, 0.7, 0.9);
-        pebble.rotation.set(0.2, Math.random() * Math.PI, 0.1);
-        pebble.castShadow = true;
-        root.add(pebble);
+        branch.rotation.z = Math.PI / 2;
+        branch.rotation.y = 0.2;
+        branch.position.y = 0.07;
+        branch.castShadow = true;
+        root.add(branch);
+
+        const end = new THREE.Mesh(
+          new THREE.CylinderGeometry(0.065, 0.065, 0.08, 6),
+          new THREE.MeshStandardMaterial({ color: 0xb18455 })
+        );
+        end.rotation.z = Math.PI / 2;
+        end.position.set(0.34, 0.07, 0);
+        root.add(end);
       } else {
-        const stick = new THREE.Mesh(
-          new THREE.CylinderGeometry(0.045, 0.06, 0.85, 6),
-          new THREE.MeshStandardMaterial({ color: 0x76502d, roughness: 1 })
+        const stone = new THREE.Mesh(
+          new THREE.DodecahedronGeometry(0.19, 0),
+          new THREE.MeshStandardMaterial({ color: 0x858b8e, roughness: 1 })
         );
-        stick.position.set(0, 0.09, 0);
-        stick.rotation.z = Math.PI / 2;
-        stick.rotation.y = Math.random() * Math.PI;
-        stick.castShadow = true;
-        root.add(stick);
+        stone.position.y = 0.13;
+        stone.scale.set(1.25, 0.72, 1);
+        stone.castShadow = true;
+        root.add(stone);
 
-        const twig = new THREE.Mesh(
-          new THREE.CylinderGeometry(0.025, 0.035, 0.34, 5),
-          new THREE.MeshStandardMaterial({ color: 0x76502d, roughness: 1 })
+        const smallerStone = new THREE.Mesh(
+          new THREE.DodecahedronGeometry(0.105, 0),
+          new THREE.MeshStandardMaterial({ color: 0x9ca1a2, roughness: 1 })
         );
-        twig.position.set(0.12, 0.11, 0.02);
-        twig.rotation.z = 0.8;
-        twig.rotation.y = stick.rotation.y;
-        root.add(twig);
+        smallerStone.position.set(0.18, 0.08, 0.1);
+        root.add(smallerStone);
       }
 
-      const item = {
-        kind: "pickup",
+      const pickup = {
         type,
         name: itemNames[type],
-        count: 1,
         root
       };
 
       root.traverse(object => {
-        if (object.isMesh) object.userData.interactable = item;
+        if (object.isMesh) object.userData.pickup = pickup;
       });
 
       scene.add(root);
-      interactables.push(item);
+      pickups.push(pickup);
     }
 
-    // Большие объекты вокруг острова — только окружение.
+    // Деревья и крупные камни оставлены на карте, но не доступны для добычи.
     [
       [-7, -4], [-5, 4], [-9, 7], [5, -6], [9, 1], [7, 9],
       [-2, -10], [12, -8], [-12, -2], [3, 13], [-13, 10], [14, 6]
-    ].forEach(([x, z], i) => {
-      if (i % 2) makeRock(x, z);
-      else makeTree(x, z);
+    ].forEach(([x, z], index) => {
+      if (index % 2 === 0) makeTree(x, z);
+      else makeLargeRock(x, z);
     });
 
-    // Маленькие камни и ветки лежат на земле и подбираются.
+    // Ветки и маленькие камни лежат на земле и подбираются отдельно.
     [
-      ["wood", 0, 5.2],
-      ["stone", 2.1, 6.1],
-      ["wood", -3.2, 3.6],
-      ["stone", -6.2, 1.8],
-      ["wood", 5.1, 4.5],
-      ["stone", 8.3, -1.2],
-      ["wood", -10.5, 8.3],
-      ["stone", 11.4, 5.8],
-      ["wood", 1.8, -8.5],
-      ["stone", -4.5, -9.1],
-      ["wood", 6.4, -5.3],
-      ["stone", 3.7, 12]
+      ["wood", -3, 5], ["stone", 2, 3], ["wood", 4, 7],
+      ["stone", -6, 1], ["wood", 8, -2], ["stone", 6, 4],
+      ["wood", -1, -5], ["stone", 10, 5], ["wood", -10, 3],
+      ["stone", -4, 10], ["wood", 12, 1], ["stone", 1, 12],
+      ["wood", 5, -10], ["stone", -11, -5], ["wood", 9, 11],
+      ["stone", -7, -9], ["wood", -2, 13], ["stone", 13, -5]
     ].forEach(([type, x, z]) => makePickup(type, x, z));
 
-    // Простая модель рук и ног от первого лица.
+    // Простая модель рук и ног от первого лица, прикреплённая к камере.
     const viewModel = new THREE.Group();
     camera.add(viewModel);
+    scene.add(camera);
 
-    const skinMaterial = new THREE.MeshStandardMaterial({
-      color: 0xd5a078,
-      roughness: 0.85
-    });
-    const sleeveMaterial = new THREE.MeshStandardMaterial({
-      color: 0x3f7650,
-      roughness: 0.9
-    });
-    const pantsMaterial = new THREE.MeshStandardMaterial({
-      color: 0x344c72,
-      roughness: 0.95
-    });
-    const bootMaterial = new THREE.MeshStandardMaterial({
-      color: 0x302a25,
-      roughness: 1
-    });
-
-    function makeLimbGroup() {
+    function makeLimb(parent, color, length, radius, x, y, z, rotationZ = 0) {
       const group = new THREE.Group();
-      group.traverse(object => {
-        if (object.isMesh) {
-          object.frustumCulled = false;
-          object.castShadow = false;
-          object.receiveShadow = false;
-        }
-      });
+      group.position.set(x, y, z);
+      group.rotation.z = rotationZ;
+
+      const limb = new THREE.Mesh(
+        new THREE.CylinderGeometry(radius * 0.82, radius, length, 8),
+        new THREE.MeshStandardMaterial({ color, roughness: 0.9 })
+      );
+      limb.position.y = -length / 2;
+      group.add(limb);
+
+      parent.add(group);
       return group;
     }
 
-    function addLimbMesh(group, geometry, material, position, scale = null) {
-      const mesh = new THREE.Mesh(geometry, material);
-      mesh.position.set(...position);
-      if (scale) mesh.scale.set(...scale);
-      mesh.frustumCulled = false;
-      mesh.castShadow = false;
-      mesh.receiveShadow = false;
-      group.add(mesh);
-      return mesh;
+    const leftLeg = makeLimb(viewModel, 0x334a6b, 0.8, 0.12, -0.19, -0.7, -0.72);
+    const rightLeg = makeLimb(viewModel, 0x334a6b, 0.8, 0.12, 0.19, -0.7, -0.72);
+
+    function makeFoot(x) {
+      const foot = new THREE.Mesh(
+        new THREE.BoxGeometry(0.21, 0.12, 0.34),
+        new THREE.MeshStandardMaterial({ color: 0x29251f, roughness: 1 })
+      );
+      foot.position.set(x, -1.12, -0.92);
+      viewModel.add(foot);
+      return foot;
     }
 
-    const leftLeg = makeLimbGroup();
-    const rightLeg = makeLimbGroup();
+    const leftFoot = makeFoot(-0.19);
+    const rightFoot = makeFoot(0.19);
 
-    for (const [group, x] of [[leftLeg, -0.19], [rightLeg, 0.19]]) {
-      addLimbMesh(
-        group,
-        new THREE.CylinderGeometry(0.105, 0.13, 0.72, 8),
-        pantsMaterial,
-        [x, -0.68, -0.18]
-      );
-      addLimbMesh(
-        group,
-        new THREE.BoxGeometry(0.23, 0.15, 0.36),
-        bootMaterial,
-        [x, -1.08, -0.28]
-      );
-      viewModel.add(group);
-    }
+    const leftArm = makeLimb(viewModel, 0xc98e69, 0.63, 0.105, -0.47, -0.38, -0.75, -0.28);
+    const rightArm = makeLimb(viewModel, 0xc98e69, 0.63, 0.105, 0.47, -0.38, -0.75, 0.28);
 
-    const leftArm = makeLimbGroup();
-    const rightArm = makeLimbGroup();
-
-    addLimbMesh(
-      leftArm,
-      new THREE.CylinderGeometry(0.09, 0.12, 0.48, 8),
-      sleeveMaterial,
-      [-0.43, -0.32, -0.48]
+    const leftHand = new THREE.Mesh(
+      new THREE.SphereGeometry(0.12, 10, 8),
+      new THREE.MeshStandardMaterial({ color: 0xd5a17b })
     );
-    addLimbMesh(
-      leftArm,
-      new THREE.SphereGeometry(0.105, 10, 8),
-      skinMaterial,
-      [-0.43, -0.58, -0.57]
+    leftHand.position.set(-0.52, -0.75, -0.78);
+    viewModel.add(leftHand);
+
+    const rightHand = new THREE.Mesh(
+      new THREE.SphereGeometry(0.12, 10, 8),
+      new THREE.MeshStandardMaterial({ color: 0xd5a17b })
     );
+    rightHand.position.set(0.52, -0.75, -0.78);
+    viewModel.add(rightHand);
 
-    addLimbMesh(
-      rightArm,
-      new THREE.CylinderGeometry(0.09, 0.12, 0.48, 8),
-      sleeveMaterial,
-      [0.43, -0.32, -0.48]
-    );
-    addLimbMesh(
-      rightArm,
-      new THREE.SphereGeometry(0.105, 10, 8),
-      skinMaterial,
-      [0.43, -0.58, -0.57]
-    );
+    const heldObject = new THREE.Group();
+    heldObject.position.set(0.58, -0.72, -0.96);
+    viewModel.add(heldObject);
 
-    viewModel.add(leftArm, rightArm);
+    function setHeldItem(type) {
+      heldObject.clear();
 
-    const heldItemGroup = new THREE.Group();
-    heldItemGroup.position.set(0.48, -0.58, -0.82);
-    viewModel.add(heldItemGroup);
-
-    function clearHeldItem() {
-      while (heldItemGroup.children.length) {
-        const object = heldItemGroup.children[0];
-        heldItemGroup.remove(object);
-        object.geometry?.dispose();
-        if (Array.isArray(object.material)) {
-          object.material.forEach(material => material.dispose());
-        } else {
-          object.material?.dispose();
-        }
+      if (type === "stone") {
+        const stone = new THREE.Mesh(
+          new THREE.DodecahedronGeometry(0.16, 0),
+          new THREE.MeshStandardMaterial({ color: 0x858b8e, roughness: 1 })
+        );
+        stone.scale.set(1.1, 0.8, 0.8);
+        heldObject.add(stone);
+      } else if (type === "wood") {
+        const branch = new THREE.Mesh(
+          new THREE.CylinderGeometry(0.045, 0.06, 0.55, 7),
+          new THREE.MeshStandardMaterial({ color: 0x82572f })
+        );
+        branch.rotation.x = Math.PI / 2;
+        branch.rotation.z = -0.5;
+        heldObject.add(branch);
       }
     }
 
-    function updateHeldItem() {
-      clearHeldItem();
-
-      const item = playerItems[selectedPlayer];
-      if (!item) return;
-
-      let mesh;
-
-      if (item.type === "stone") {
-        mesh = new THREE.Mesh(
-          new THREE.DodecahedronGeometry(0.2, 0),
-          new THREE.MeshStandardMaterial({ color: 0x92999b, roughness: 1 })
-        );
-        mesh.scale.set(1.1, 0.8, 0.9);
-      } else {
-        mesh = new THREE.Mesh(
-          new THREE.CylinderGeometry(0.045, 0.06, 0.65, 6),
-          new THREE.MeshStandardMaterial({ color: 0x76502d, roughness: 1 })
-        );
-        mesh.rotation.z = Math.PI / 2;
-      }
-
-      mesh.position.set(0.02, -0.02, 0);
-      mesh.rotation.y = 0.35;
-      mesh.frustumCulled = false;
-      mesh.castShadow = false;
-      heldItemGroup.add(mesh);
+    function getSelectedItemType() {
+      if (selectedSlot < 0 || !playerItems[selectedSlot]) return null;
+      return playerItems[selectedSlot].type;
     }
 
     function setCamera() {
@@ -709,21 +651,17 @@
       camera.rotation.x = player.pitch;
     }
 
-    setCamera();
-
     function getTarget() {
       raycaster.setFromCamera(new THREE.Vector2(0, 0), camera);
-      const objects = interactables.flatMap(item => item.root.children);
+      const objects = pickups.flatMap(pickup => pickup.root.children);
       const hits = raycaster.intersectObjects(objects, true);
 
       for (const hit of hits) {
-        const item = hit.object.userData.interactable;
-        if (!item) continue;
-
-        const distance = camera.position.distanceTo(hit.point);
-        if (distance <= 3.5) return item;
+        const pickup = hit.object.userData.pickup;
+        if (pickup && camera.position.distanceTo(hit.point) <= 3.5) {
+          return pickup;
+        }
       }
-
       return null;
     }
 
@@ -731,39 +669,32 @@
       currentTarget = modalOpen ? null : getTarget();
 
       const box = document.getElementById("targetBox");
-      const hit = document.getElementById("hit");
-
       if (!currentTarget) {
         box.style.display = "none";
-        hit.style.display = "none";
         return;
       }
 
       box.style.display = "block";
-      document.getElementById("targetName").textContent =
-        `${currentTarget.name} · x${currentTarget.count}`;
-
-      document.getElementById("interact").textContent = "Подобрать";
-      hit.style.display = "none";
+      document.getElementById("targetName").textContent = currentTarget.name;
     }
 
-    function collectPickup() {
-      if (!currentTarget || currentTarget.kind !== "pickup" || modalOpen) return;
+    function collectTarget() {
+      if (!currentTarget || modalOpen) return;
 
       const item = currentTarget;
-      const added = addToInventory(item.type, item.count);
+      const added = addToInventory(item.type, 1);
 
       if (added > 0) {
         scene.remove(item.root);
-        const index = interactables.indexOf(item);
-        if (index >= 0) interactables.splice(index, 1);
-        notify(`+${added} ${itemNames[item.type]}`);
-      } else {
-        notify("В инвентаре нет места");
+        const index = pickups.indexOf(item);
+        if (index !== -1) pickups.splice(index, 1);
+        notify(`Подобрано: ${item.name}`);
       }
 
       updateTarget();
     }
+
+    document.getElementById("interact").addEventListener("click", collectTarget);
 
     function openInventory() {
       modalOpen = true;
@@ -774,86 +705,104 @@
     function closeInventory() {
       modalOpen = false;
       document.getElementById("modal").style.display = "none";
+      selectedSlot = -1;
+      renderHotbar();
     }
 
-    document.getElementById("interact").addEventListener("click", collectPickup);
-    document.getElementById("hit").addEventListener("click", collectPickup);
-    document.getElementById("closeModal").addEventListener("click", closeInventory);
     document.getElementById("inventoryButton").addEventListener("click", openInventory);
-
+    document.getElementById("closeModal").addEventListener("click", closeInventory);
     document.getElementById("modal").addEventListener("click", event => {
       if (event.target.id === "modal") closeInventory();
     });
-
-    function slotHtml(item, index, active = false) {
-      if (!item) {
-        return `<div class="slot ${active ? "active" : ""}" data-index="${index}"></div>`;
-      }
-
-      return `
-        <div class="slot ${active ? "active" : ""}" data-index="${index}">
-          ${itemIcons[item.type]}<small>${item.count}</small>
-        </div>
-      `;
-    }
 
     function renderHotbar() {
       const bar = document.getElementById("hotbar");
       bar.innerHTML = "";
 
       for (let i = 0; i < 8; i++) {
-        const el = document.createElement("div");
-        el.className = `slot ${selectedPlayer === i ? "selected" : ""}`;
-        el.innerHTML = playerItems[i]
-          ? `${itemIcons[playerItems[i].type]}<small>${playerItems[i].count}</small>`
-          : `${i + 1}`;
+        const element = document.createElement("div");
+        element.className = `slot ${selectedSlot === i ? "selected" : ""}`;
 
-        el.addEventListener("click", () => {
-          selectedPlayer = i;
+        if (playerItems[i]) {
+          element.innerHTML = `${itemIcons[playerItems[i].type]}<small>${playerItems[i].count}</small>`;
+        } else {
+          element.textContent = String(i + 1);
+        }
+
+        element.addEventListener("click", () => {
+          selectedSlot = i;
+          setHeldItem(getSelectedItemType());
           renderHotbar();
-          updateHeldItem();
+          renderInventory();
         });
 
-        bar.appendChild(el);
+        bar.appendChild(element);
       }
+
+      setHeldItem(getSelectedItemType());
     }
 
     function renderInventory() {
       const grid = document.getElementById("playerGrid");
-      grid.innerHTML = playerItems
-        .map((item, index) => slotHtml(item, index, selectedPlayer === index))
-        .join("");
+      grid.innerHTML = "";
 
-      grid.querySelectorAll(".slot").forEach(element => {
+      playerItems.forEach((item, index) => {
+        const element = document.createElement("div");
+        element.className = `slot ${selectedSlot === index ? "selected" : ""}`;
+
+        if (item) {
+          element.innerHTML = `${itemIcons[item.type]}<small>${item.count}</small>`;
+        } else {
+          element.textContent = String(index + 1);
+        }
+
         element.addEventListener("click", () => {
-          selectedPlayer = Number(element.dataset.index);
-          renderInventory();
+          selectedSlot = index;
+          setHeldItem(getSelectedItemType());
           renderHotbar();
-          updateHeldItem();
+          renderInventory();
         });
+
+        grid.appendChild(element);
       });
     }
 
-    // Джойстик: начать движение можно в левой четверти экрана.
+    document.getElementById("jump").addEventListener("pointerdown", event => {
+      event.preventDefault();
+
+      if (!modalOpen && player.grounded) {
+        player.vy = 6.2;
+        player.grounded = false;
+      }
+    });
+
+    // Джойстик появляется под пальцем при касании любой точки левой четверти.
     const joystick = document.getElementById("joystick");
     const stick = document.getElementById("stick");
-    const joy = { id: null, cx: 0, cy: 0, x: 0, y: 0, radius: 55 };
+    const joy = {
+      id: null,
+      centerX: 0,
+      centerY: 0,
+      x: 0,
+      y: 0,
+      radius: 55
+    };
+
     const leftZoneWidth = () => innerWidth * 0.25;
 
     function startJoystick(event) {
-      if (joy.id !== null || modalOpen || event.clientX > leftZoneWidth()) {
-        return false;
-      }
+      if (joy.id !== null || modalOpen || event.clientX > leftZoneWidth()) return false;
 
       joy.id = event.pointerId;
-      joy.cx = event.clientX;
-      joy.cy = event.clientY;
-      joy.x = joy.y = 0;
+      joy.centerX = event.clientX;
+      joy.centerY = event.clientY;
+      joy.x = 0;
+      joy.y = 0;
 
       joystick.style.display = "block";
-      joystick.style.left = `${joy.cx}px`;
-      joystick.style.top = `${joy.cy}px`;
-      stick.style.transform = "translate(0,0)";
+      joystick.style.left = `${joy.centerX}px`;
+      joystick.style.top = `${joy.centerY}px`;
+      stick.style.transform = "translate(0, 0)";
 
       event.preventDefault();
       return true;
@@ -862,10 +811,10 @@
     function moveJoystick(event) {
       if (event.pointerId !== joy.id) return;
 
-      const dx = event.clientX - joy.cx;
-      const dy = event.clientY - joy.cy;
-      const length = Math.hypot(dx, dy);
-      const scale = length > joy.radius ? joy.radius / length : 1;
+      const dx = event.clientX - joy.centerX;
+      const dy = event.clientY - joy.centerY;
+      const distance = Math.hypot(dx, dy);
+      const scale = distance > joy.radius ? joy.radius / distance : 1;
 
       joy.x = dx * scale / joy.radius;
       joy.y = dy * scale / joy.radius;
@@ -876,18 +825,156 @@
       if (event.pointerId !== joy.id) return;
 
       joy.id = null;
-      joy.x = joy.y = 0;
+      joy.x = 0;
+      joy.y = 0;
       joystick.style.display = "none";
     }
 
     let lookPointer = null;
-    let lastX = 0;
-    let lastY = 0;
+    let lastPointerX = 0;
+    let lastPointerY = 0;
 
     renderer.domElement.addEventListener("pointerdown", event => {
       if (startJoystick(event)) return;
 
       if (event.clientX > leftZoneWidth() && !modalOpen) {
         lookPointer = event.pointerId;
-        lastX = event.clientX;
-        lastY = event*
+        lastPointerX = event.clientX;
+        lastPointerY = event.clientY;
+        renderer.domElement.setPointerCapture(event.pointerId);
+      }
+    });
+
+    window.addEventListener("pointermove", event => {
+      moveJoystick(event);
+
+      if (event.pointerId === lookPointer) {
+        player.yaw -= (event.clientX - lastPointerX) * 0.005;
+        player.pitch -= (event.clientY - lastPointerY) * 0.004;
+        player.pitch = THREE.MathUtils.clamp(player.pitch, -1.25, 1.25);
+
+        lastPointerX = event.clientX;
+        lastPointerY = event.clientY;
+      }
+    });
+
+    window.addEventListener("pointerup", event => {
+      endJoystick(event);
+      if (event.pointerId === lookPointer) lookPointer = null;
+    });
+
+    window.addEventListener("pointercancel", event => {
+      endJoystick(event);
+      if (event.pointerId === lookPointer) lookPointer = null;
+    });
+
+    const keys = {};
+
+    window.addEventListener("keydown", event => {
+      keys[event.code] = true;
+
+      if (event.code === "Space" && player.grounded && !modalOpen) {
+        player.vy = 6.2;
+        player.grounded = false;
+      }
+
+      if (/^Digit[1-8]$/.test(event.code)) {
+        selectedSlot = Number(event.code.slice(-1)) - 1;
+        setHeldItem(getSelectedItemType());
+        renderHotbar();
+      }
+
+      if (event.code === "Escape" && modalOpen) closeInventory();
+    });
+
+    window.addEventListener("keyup", event => {
+      keys[event.code] = false;
+    });
+
+    function animateLimbs(moving, dt) {
+      if (moving) {
+        walkTime += dt * 10;
+      }
+
+      const swing = moving ? Math.sin(walkTime) * 0.35 : 0;
+
+      leftLeg.rotation.x = swing;
+      rightLeg.rotation.x = -swing;
+      leftFoot.rotation.x = swing * 0.5;
+      rightFoot.rotation.x = -swing * 0.5;
+      leftArm.rotation.x = -swing * 0.6;
+      rightArm.rotation.x = swing * 0.6;
+    }
+
+    let lastTime = performance.now();
+
+    function animate(now) {
+      requestAnimationFrame(animate);
+
+      const dt = Math.min((now - lastTime) / 1000, 0.05);
+      lastTime = now;
+
+      let moving = false;
+
+      if (!modalOpen) {
+        let forward = -joy.y;
+        let strafe = joy.x;
+
+        if (keys.KeyW || keys.ArrowUp) forward += 1;
+        if (keys.KeyS || keys.ArrowDown) forward -= 1;
+        if (keys.KeyD || keys.ArrowRight) strafe += 1;
+        if (keys.KeyA || keys.ArrowLeft) strafe -= 1;
+
+        const magnitude = Math.hypot(forward, strafe);
+
+        if (magnitude > 1) {
+          forward /= magnitude;
+          strafe /= magnitude;
+        }
+
+        moving = magnitude > 0.05;
+
+        const speed = 5.2;
+        player.x += (
+          Math.sin(player.yaw) * forward +
+          Math.cos(player.yaw) * strafe
+        ) * speed * dt;
+
+        player.z += (
+          -Math.cos(player.yaw) * forward +
+          Math.sin(player.yaw) * strafe
+        ) * speed * dt;
+
+        // Гравитация и плавный прыжок с земли.
+        player.vy -= 17 * dt;
+        player.y += player.vy * dt;
+
+        if (player.y <= 0) {
+          player.y = 0;
+          player.vy = 0;
+          player.grounded = true;
+        }
+      }
+
+      animateLimbs(moving && !modalOpen, dt);
+      setCamera();
+      updateTarget();
+      renderer.render(scene, camera);
+    }
+
+    requestAnimationFrame(animate);
+
+    function resize() {
+      camera.aspect = innerWidth / innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(innerWidth, innerHeight);
+      renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+    }
+
+    window.addEventListener("resize", resize);
+
+    renderHotbar();
+    renderInventory();
+  </script>
+</body>
+</html>
