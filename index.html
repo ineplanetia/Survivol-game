@@ -6,122 +6,327 @@
   <title>Остров — выживание</title>
   <style>
     * { box-sizing: border-box; }
+
     html, body {
-      margin: 0; width: 100%; height: 100%; overflow: hidden;
-      background: #87ceeb; font-family: system-ui, sans-serif; color: white;
-      touch-action: none; user-select: none;
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #87ceeb;
+      font-family: system-ui, sans-serif;
+      color: white;
+      touch-action: none;
+      user-select: none;
     }
+
     canvas { display: block; }
-    #ui { position: fixed; inset: 0; pointer-events: none; }
+
+    #ui {
+      position: fixed;
+      inset: 0;
+      z-index: 2;
+      pointer-events: none;
+    }
+
     #crosshair {
-      position: absolute; left: 50%; top: 50%; width: 12px; height: 12px;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 12px;
+      height: 12px;
       transform: translate(-50%, -50%);
     }
-    #crosshair::before, #crosshair::after {
-      content: ""; position: absolute; background: #fff; box-shadow: 0 1px 3px #222;
+
+    #crosshair::before,
+    #crosshair::after {
+      content: "";
+      position: absolute;
+      background: #fff;
+      box-shadow: 0 1px 3px #222;
     }
-    #crosshair::before { width: 2px; height: 12px; left: 5px; }
-    #crosshair::after { height: 2px; width: 12px; top: 5px; }
+
+    #crosshair::before {
+      width: 2px;
+      height: 12px;
+      left: 5px;
+    }
+
+    #crosshair::after {
+      height: 2px;
+      width: 12px;
+      top: 5px;
+    }
+
     #targetBox {
-      position: absolute; top: calc(50% + 24px); left: 50%;
-      transform: translateX(-50%); display: none; pointer-events: auto;
-      background: #17231ee8; border: 1px solid #ffffff55; border-radius: 10px;
-      padding: 8px 12px; text-align: center; min-width: 150px;
+      position: absolute;
+      top: calc(50% + 24px);
+      left: 50%;
+      transform: translateX(-50%);
+      display: none;
+      pointer-events: auto;
+      background: #17231ee8;
+      border: 1px solid #ffffff55;
+      border-radius: 10px;
+      padding: 8px 12px;
+      text-align: center;
+      min-width: 150px;
     }
-    #targetName { font-weight: 700; margin-bottom: 5px; }
+
+    #targetName {
+      font-weight: 700;
+      margin-bottom: 5px;
+    }
+
     button {
-      border: 0; border-radius: 9px; color: white; font-weight: 700;
-      background: #468e52; padding: 9px 14px; cursor: pointer;
+      border: 0;
+      border-radius: 9px;
+      color: white;
+      font-weight: 700;
+      background: #468e52;
+      padding: 9px 14px;
+      cursor: pointer;
+      font-family: inherit;
     }
-    button:active { filter: brightness(1.2); transform: scale(.97); }
+
+    button:active {
+      filter: brightness(1.2);
+      transform: scale(.97);
+    }
+
     #joystick {
-      position: absolute; display: none; width: 150px; height: 150px;
-      border-radius: 50%; border: 2px solid #ffffff70; background: #16231d55;
-      transform: translate(-50%, -50%); pointer-events: none;
+      position: absolute;
+      display: none;
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      border: 2px solid #ffffff70;
+      background: #16231d55;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
     }
+
     #stick {
-      position: absolute; left: 50%; top: 50%; width: 66px; height: 66px;
-      margin: -33px; border-radius: 50%; background: #ffffffaa;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 66px;
+      height: 66px;
+      margin: -33px;
+      border-radius: 50%;
+      background: #ffffffaa;
       border: 2px solid white;
     }
+
     #jump {
-      pointer-events: auto; position: absolute; right: 24px; bottom: 28px;
-      width: 86px; height: 86px; border-radius: 50%;
-      background: #357fbdcc; border: 2px solid #ffffffaa; font-size: 15px;
+      pointer-events: auto;
+      position: absolute;
+      right: 24px;
+      bottom: 28px;
+      width: 86px;
+      height: 86px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 28%, #70c4ff, #2674b6 70%);
+      border: 3px solid #ffffffcc;
+      box-shadow: 0 5px 0 #174b77, 0 7px 15px #0006;
+      font-size: 14px;
+      line-height: 1.1;
+      text-shadow: 0 1px 2px #174b77;
+      transition: filter .12s, box-shadow .12s, transform .12s;
     }
+
+    #jump:active {
+      transform: translateY(4px) scale(.97);
+      box-shadow: 0 1px 0 #174b77, 0 3px 8px #0006;
+    }
+
     #hit {
-      pointer-events: auto; position: absolute; right: 120px; bottom: 34px;
-      width: 70px; height: 70px; border-radius: 50%; display: none;
-      background: #a56a2dcc; border: 2px solid #ffffffaa;
+      pointer-events: auto;
+      position: absolute;
+      right: 120px;
+      bottom: 34px;
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      display: none;
+      background: #a56a2dcc;
+      border: 2px solid #ffffffaa;
     }
+
     #hotbar {
-      position: absolute; left: 50%; bottom: 14px; transform: translateX(-50%);
-      display: flex; gap: 5px; pointer-events: auto;
+      position: absolute;
+      left: 50%;
+      bottom: 14px;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 5px;
+      pointer-events: auto;
     }
+
     .slot {
-      width: 55px; height: 55px; background: #15231dd9; border: 2px solid #ffffff66;
-      border-radius: 8px; display: grid; place-items: center; position: relative;
-      font-size: 12px; text-align: center; cursor: pointer;
+      width: 53px;
+      height: 53px;
+      flex: 0 0 auto;
+      background: #15231dd9;
+      border: 2px solid #ffffff66;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      position: relative;
+      font-size: 12px;
+      text-align: center;
+      cursor: pointer;
     }
-    .slot.selected { border-color: #ffe66d; box-shadow: 0 0 10px #ffe66d99; }
-    .slot small { position: absolute; right: 4px; bottom: 1px; font-size: 11px; }
+
+    .slot.selected {
+      border-color: #ffe66d;
+      box-shadow: 0 0 10px #ffe66d99;
+    }
+
+    .slot small {
+      position: absolute;
+      right: 4px;
+      bottom: 1px;
+      font-size: 11px;
+    }
+
     #inventoryButton {
-      pointer-events: auto; position: absolute; top: 14px; right: 14px;
+      pointer-events: auto;
+      position: absolute;
+      top: 14px;
+      right: 14px;
       background: #17231dcc;
     }
+
     #hint {
-      position: absolute; top: 14px; left: 50%; transform: translateX(-50%);
-      background: #17231dbb; border-radius: 8px; padding: 7px 10px;
-      font-size: 12px; white-space: nowrap;
+      position: absolute;
+      top: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #17231dbb;
+      border-radius: 8px;
+      padding: 7px 10px;
+      font-size: 12px;
+      white-space: nowrap;
     }
+
     #toast {
-      position: absolute; left: 50%; top: 18%; transform: translateX(-50%);
-      background: #17231de8; border-radius: 9px; padding: 9px 14px;
+      position: absolute;
+      left: 50%;
+      top: 18%;
+      transform: translateX(-50%);
+      background: #17231de8;
+      border-radius: 9px;
+      padding: 9px 14px;
       display: none;
     }
+
     #modal {
-      display: none; position: absolute; inset: 0; pointer-events: auto;
-      background: #0009; align-items: center; justify-content: center;
+      display: none;
+      position: absolute;
+      inset: 0;
+      pointer-events: auto;
+      background: #0009;
+      align-items: center;
+      justify-content: center;
     }
+
     #panel {
-      background: #1c2a22; border: 1px solid #ffffff55; border-radius: 12px;
-      width: min(94vw, 680px); max-height: 92vh; overflow: auto; padding: 14px;
+      background: #1c2a22;
+      border: 1px solid #ffffff55;
+      border-radius: 12px;
+      width: min(94vw, 680px);
+      max-height: 92vh;
+      overflow: auto;
+      padding: 14px;
     }
-    #panelHeader { display: flex; justify-content: space-between; align-items: center; }
-    #panel h2 { margin: 0 0 10px; font-size: 18px; }
-    .grids { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-    .grid {
-      display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px;
+
+    #panelHeader {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
     }
-    .grid .slot { width: 100%; height: 48px; }
-    .grid .slot.active { outline: 2px solid #ffe66d; }
-    .panelActions { display: flex; gap: 8px; margin-top: 12px; }
+
+    #panel h2 {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    #playerGrid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 7px;
+    }
+
+    #playerGrid .slot {
+      width: 100%;
+      height: 58px;
+    }
+
     #closeModal { background: #80504b; }
+
     @media (orientation: portrait) {
       #rotate {
-        display: flex; position: fixed; inset: 0; z-index: 20;
-        background: #14221b; align-items: center; justify-content: center;
-        text-align: center; padding: 30px; font-size: 20px;
+        display: flex;
+        position: fixed;
+        inset: 0;
+        z-index: 20;
+        background: #14221b;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 30px;
+        font-size: 20px;
       }
     }
-    @media (orientation: landscape) { #rotate { display: none; } }
+
+    @media (orientation: landscape) {
+      #rotate { display: none; }
+    }
+
+    @media (max-width: 700px) {
+      #hotbar { gap: 3px; }
+      #hotbar .slot {
+        width: 43px;
+        height: 46px;
+      }
+    }
+
     @media (max-height: 430px) {
-      #jump { width: 68px; height: 68px; right: 16px; bottom: 16px; }
-      #hit { width: 58px; height: 58px; right: 96px; bottom: 21px; }
-      .slot { width: 46px; height: 46px; }
+      #jump {
+        width: 68px;
+        height: 68px;
+        right: 16px;
+        bottom: 16px;
+      }
+
+      #hit {
+        width: 58px;
+        height: 58px;
+        right: 96px;
+        bottom: 21px;
+      }
+
       #hotbar { bottom: 8px; }
       #hint { top: 7px; }
+      #hotbar .slot {
+        height: 42px;
+      }
     }
   </style>
 </head>
 <body>
   <div id="rotate">Поверните устройство в альбомную ориентацию</div>
+
   <div id="ui">
     <div id="crosshair"></div>
+
     <div id="targetBox">
       <div id="targetName"></div>
-      <button id="interact">Добывать</button>
+      <button id="interact">Подобрать</button>
     </div>
+
     <div id="joystick"><div id="stick"></div></div>
     <button id="hit">Удар</button>
     <button id="jump">ПРЫЖОК</button>
@@ -129,20 +334,14 @@
     <div id="hotbar"></div>
     <div id="hint">Левая четверть — движение · правая часть — обзор</div>
     <div id="toast"></div>
+
     <div id="modal">
       <div id="panel">
         <div id="panelHeader">
-          <h2>Сундук и инвентарь</h2>
+          <h2>Инвентарь</h2>
           <button id="closeModal">Закрыть</button>
         </div>
-        <div class="grids">
-          <section><h2>Игрок</h2><div class="grid" id="playerGrid"></div></section>
-          <section><h2>Сундук</h2><div class="grid" id="chestGrid"></div></section>
-        </div>
-        <div class="panelActions">
-          <button id="putItem">Положить выбранное →</button>
-          <button id="takeItem">← Забрать выбранное</button>
-        </div>
+        <div id="playerGrid"></div>
       </div>
     </div>
   </div>
@@ -163,6 +362,7 @@
     document.body.appendChild(renderer.domElement);
 
     scene.add(new THREE.HemisphereLight(0xdff4ff, 0x53613d, 2));
+
     const sun = new THREE.DirectionalLight(0xfff1d0, 2.2);
     sun.position.set(-15, 25, 12);
     sun.castShadow = true;
@@ -176,53 +376,80 @@
     ground.receiveShadow = true;
     scene.add(ground);
 
-    const player = { x: 0, z: 8, y: 0, vy: 0, yaw: 0, pitch: 0, grounded: true };
+    const player = {
+      x: 0,
+      z: 8,
+      y: 0,
+      vy: 0,
+      yaw: 0,
+      pitch: 0,
+      grounded: true
+    };
+
     const interactables = [];
     const raycaster = new THREE.Raycaster();
     raycaster.far = 3.5;
+
     let currentTarget = null;
-    let selectedPlayer = -1, selectedChest = -1;
+    let selectedPlayer = 0;
     let modalOpen = false;
     let toastTimer;
+    let walkTime = 0;
 
     const playerItems = Array(30).fill(null);
-    const chestItems = Array(30).fill(null);
-    const itemNames = { wood: "Дерево", stone: "Камень" };
-    const itemIcons = { wood: "🪵", stone: "🪨" };
+    const itemNames = {
+      wood: "Ветка",
+      stone: "Маленький камень"
+    };
+    const itemIcons = {
+      wood: "🪵",
+      stone: "🪨"
+    };
 
     function notify(text) {
       const el = document.getElementById("toast");
       el.textContent = text;
       el.style.display = "block";
       clearTimeout(toastTimer);
-      toastTimer = setTimeout(() => el.style.display = "none", 1500);
+      toastTimer = setTimeout(() => {
+        el.style.display = "none";
+      }, 1500);
     }
 
     function addToInventory(type, amount) {
       let left = amount;
+
       for (const slot of playerItems) {
         if (slot && slot.type === type && slot.count < 99) {
           const n = Math.min(left, 99 - slot.count);
-          slot.count += n; left -= n;
+          slot.count += n;
+          left -= n;
           if (!left) break;
         }
       }
+
       while (left > 0) {
         const index = playerItems.findIndex(x => x === null);
         if (index < 0) break;
+
         const n = Math.min(left, 99);
         playerItems[index] = { type, count: n };
         left -= n;
       }
+
       renderHotbar();
       renderInventory();
+      updateHeldItem();
+
       if (left > 0) notify("Инвентарь заполнен");
       return amount - left;
     }
 
+    // Большие деревья остаются декорацией: добывать их нельзя.
     function makeTree(x, z) {
       const root = new THREE.Group();
       root.position.set(x, 0, z);
+
       const trunk = new THREE.Mesh(
         new THREE.CylinderGeometry(0.25, 0.38, 2.1, 7),
         new THREE.MeshStandardMaterial({ color: 0x76502d })
@@ -230,6 +457,7 @@
       trunk.position.y = 1.05;
       trunk.castShadow = true;
       root.add(trunk);
+
       const leaves = new THREE.Mesh(
         new THREE.ConeGeometry(1.25, 3.1, 8),
         new THREE.MeshStandardMaterial({ color: 0x287a3e })
@@ -237,15 +465,15 @@
       leaves.position.y = 3.1;
       leaves.castShadow = true;
       root.add(leaves);
-      const item = { kind: "resource", type: "wood", name: "Дерево", hp: 5, maxHp: 5, root };
-      root.traverse(o => { if (o.isMesh) o.userData.interactable = item; });
+
       scene.add(root);
-      interactables.push(item);
     }
 
+    // Большие камни тоже остаются декорацией и не добываются.
     function makeRock(x, z) {
       const root = new THREE.Group();
       root.position.set(x, 0, z);
+
       const rock = new THREE.Mesh(
         new THREE.DodecahedronGeometry(0.8, 1),
         new THREE.MeshStandardMaterial({ color: 0x858b8e, roughness: 1 })
@@ -254,41 +482,225 @@
       rock.scale.set(1.2, 0.8, 1);
       rock.castShadow = true;
       root.add(rock);
-      const item = { kind: "resource", type: "stone", name: "Камень", hp: 4, maxHp: 4, root };
-      rock.userData.interactable = item;
+
       scene.add(root);
-      interactables.push(item);
     }
 
-    function makeChest(x, z) {
+    function makePickup(type, x, z) {
       const root = new THREE.Group();
       root.position.set(x, 0, z);
-      const box = new THREE.Mesh(
-        new THREE.BoxGeometry(1.35, 0.85, 0.9),
-        new THREE.MeshStandardMaterial({ color: 0x8a5129 })
-      );
-      box.position.y = 0.45;
-      box.castShadow = true;
-      root.add(box);
-      const lid = new THREE.Mesh(
-        new THREE.BoxGeometry(1.4, 0.18, 0.95),
-        new THREE.MeshStandardMaterial({ color: 0x603919 })
-      );
-      lid.position.y = 0.93;
-      lid.castShadow = true;
-      root.add(lid);
-      const item = { kind: "chest", name: "Сундук", root };
-      root.traverse(o => { if (o.isMesh) o.userData.interactable = item; });
+
+      if (type === "stone") {
+        const pebble = new THREE.Mesh(
+          new THREE.DodecahedronGeometry(0.23, 0),
+          new THREE.MeshStandardMaterial({ color: 0x92999b, roughness: 1 })
+        );
+        pebble.position.set(0, 0.16, 0);
+        pebble.scale.set(1.25, 0.7, 0.9);
+        pebble.rotation.set(0.2, Math.random() * Math.PI, 0.1);
+        pebble.castShadow = true;
+        root.add(pebble);
+      } else {
+        const stick = new THREE.Mesh(
+          new THREE.CylinderGeometry(0.045, 0.06, 0.85, 6),
+          new THREE.MeshStandardMaterial({ color: 0x76502d, roughness: 1 })
+        );
+        stick.position.set(0, 0.09, 0);
+        stick.rotation.z = Math.PI / 2;
+        stick.rotation.y = Math.random() * Math.PI;
+        stick.castShadow = true;
+        root.add(stick);
+
+        const twig = new THREE.Mesh(
+          new THREE.CylinderGeometry(0.025, 0.035, 0.34, 5),
+          new THREE.MeshStandardMaterial({ color: 0x76502d, roughness: 1 })
+        );
+        twig.position.set(0.12, 0.11, 0.02);
+        twig.rotation.z = 0.8;
+        twig.rotation.y = stick.rotation.y;
+        root.add(twig);
+      }
+
+      const item = {
+        kind: "pickup",
+        type,
+        name: itemNames[type],
+        count: 1,
+        root
+      };
+
+      root.traverse(object => {
+        if (object.isMesh) object.userData.interactable = item;
+      });
+
       scene.add(root);
       interactables.push(item);
     }
 
-    // Небольшой остров: ресурсы размещены вокруг игрока и сундука.
+    // Большие объекты вокруг острова — только окружение.
     [
-      [-7,-4], [-5,4], [-9,7], [5,-6], [9,1], [7,9], [-2,-10],
-      [12,-8], [-12,-2], [3,13], [-13,10], [14,6]
-    ].forEach(([x,z], i) => i % 2 ? makeRock(x,z) : makeTree(x,z));
-    makeChest(3, 3);
+      [-7, -4], [-5, 4], [-9, 7], [5, -6], [9, 1], [7, 9],
+      [-2, -10], [12, -8], [-12, -2], [3, 13], [-13, 10], [14, 6]
+    ].forEach(([x, z], i) => {
+      if (i % 2) makeRock(x, z);
+      else makeTree(x, z);
+    });
+
+    // Маленькие камни и ветки лежат на земле и подбираются.
+    [
+      ["wood", 0, 5.2],
+      ["stone", 2.1, 6.1],
+      ["wood", -3.2, 3.6],
+      ["stone", -6.2, 1.8],
+      ["wood", 5.1, 4.5],
+      ["stone", 8.3, -1.2],
+      ["wood", -10.5, 8.3],
+      ["stone", 11.4, 5.8],
+      ["wood", 1.8, -8.5],
+      ["stone", -4.5, -9.1],
+      ["wood", 6.4, -5.3],
+      ["stone", 3.7, 12]
+    ].forEach(([type, x, z]) => makePickup(type, x, z));
+
+    // Простая модель рук и ног от первого лица.
+    const viewModel = new THREE.Group();
+    camera.add(viewModel);
+
+    const skinMaterial = new THREE.MeshStandardMaterial({
+      color: 0xd5a078,
+      roughness: 0.85
+    });
+    const sleeveMaterial = new THREE.MeshStandardMaterial({
+      color: 0x3f7650,
+      roughness: 0.9
+    });
+    const pantsMaterial = new THREE.MeshStandardMaterial({
+      color: 0x344c72,
+      roughness: 0.95
+    });
+    const bootMaterial = new THREE.MeshStandardMaterial({
+      color: 0x302a25,
+      roughness: 1
+    });
+
+    function makeLimbGroup() {
+      const group = new THREE.Group();
+      group.traverse(object => {
+        if (object.isMesh) {
+          object.frustumCulled = false;
+          object.castShadow = false;
+          object.receiveShadow = false;
+        }
+      });
+      return group;
+    }
+
+    function addLimbMesh(group, geometry, material, position, scale = null) {
+      const mesh = new THREE.Mesh(geometry, material);
+      mesh.position.set(...position);
+      if (scale) mesh.scale.set(...scale);
+      mesh.frustumCulled = false;
+      mesh.castShadow = false;
+      mesh.receiveShadow = false;
+      group.add(mesh);
+      return mesh;
+    }
+
+    const leftLeg = makeLimbGroup();
+    const rightLeg = makeLimbGroup();
+
+    for (const [group, x] of [[leftLeg, -0.19], [rightLeg, 0.19]]) {
+      addLimbMesh(
+        group,
+        new THREE.CylinderGeometry(0.105, 0.13, 0.72, 8),
+        pantsMaterial,
+        [x, -0.68, -0.18]
+      );
+      addLimbMesh(
+        group,
+        new THREE.BoxGeometry(0.23, 0.15, 0.36),
+        bootMaterial,
+        [x, -1.08, -0.28]
+      );
+      viewModel.add(group);
+    }
+
+    const leftArm = makeLimbGroup();
+    const rightArm = makeLimbGroup();
+
+    addLimbMesh(
+      leftArm,
+      new THREE.CylinderGeometry(0.09, 0.12, 0.48, 8),
+      sleeveMaterial,
+      [-0.43, -0.32, -0.48]
+    );
+    addLimbMesh(
+      leftArm,
+      new THREE.SphereGeometry(0.105, 10, 8),
+      skinMaterial,
+      [-0.43, -0.58, -0.57]
+    );
+
+    addLimbMesh(
+      rightArm,
+      new THREE.CylinderGeometry(0.09, 0.12, 0.48, 8),
+      sleeveMaterial,
+      [0.43, -0.32, -0.48]
+    );
+    addLimbMesh(
+      rightArm,
+      new THREE.SphereGeometry(0.105, 10, 8),
+      skinMaterial,
+      [0.43, -0.58, -0.57]
+    );
+
+    viewModel.add(leftArm, rightArm);
+
+    const heldItemGroup = new THREE.Group();
+    heldItemGroup.position.set(0.48, -0.58, -0.82);
+    viewModel.add(heldItemGroup);
+
+    function clearHeldItem() {
+      while (heldItemGroup.children.length) {
+        const object = heldItemGroup.children[0];
+        heldItemGroup.remove(object);
+        object.geometry?.dispose();
+        if (Array.isArray(object.material)) {
+          object.material.forEach(material => material.dispose());
+        } else {
+          object.material?.dispose();
+        }
+      }
+    }
+
+    function updateHeldItem() {
+      clearHeldItem();
+
+      const item = playerItems[selectedPlayer];
+      if (!item) return;
+
+      let mesh;
+
+      if (item.type === "stone") {
+        mesh = new THREE.Mesh(
+          new THREE.DodecahedronGeometry(0.2, 0),
+          new THREE.MeshStandardMaterial({ color: 0x92999b, roughness: 1 })
+        );
+        mesh.scale.set(1.1, 0.8, 0.9);
+      } else {
+        mesh = new THREE.Mesh(
+          new THREE.CylinderGeometry(0.045, 0.06, 0.65, 6),
+          new THREE.MeshStandardMaterial({ color: 0x76502d, roughness: 1 })
+        );
+        mesh.rotation.z = Math.PI / 2;
+      }
+
+      mesh.position.set(0.02, -0.02, 0);
+      mesh.rotation.y = 0.35;
+      mesh.frustumCulled = false;
+      mesh.castShadow = false;
+      heldItemGroup.add(mesh);
+    }
 
     function setCamera() {
       camera.position.set(player.x, 1.65 + player.y, player.z);
@@ -296,247 +708,186 @@
       camera.rotation.y = player.yaw;
       camera.rotation.x = player.pitch;
     }
+
     setCamera();
 
     function getTarget() {
       raycaster.setFromCamera(new THREE.Vector2(0, 0), camera);
-      const hits = raycaster.intersectObjects(interactables.flatMap(i => i.root.children), true);
+      const objects = interactables.flatMap(item => item.root.children);
+      const hits = raycaster.intersectObjects(objects, true);
+
       for (const hit of hits) {
         const item = hit.object.userData.interactable;
         if (!item) continue;
+
         const distance = camera.position.distanceTo(hit.point);
         if (distance <= 3.5) return item;
       }
+
       return null;
     }
 
     function updateTarget() {
       currentTarget = modalOpen ? null : getTarget();
+
       const box = document.getElementById("targetBox");
       const hit = document.getElementById("hit");
+
       if (!currentTarget) {
         box.style.display = "none";
         hit.style.display = "none";
         return;
       }
+
       box.style.display = "block";
       document.getElementById("targetName").textContent =
-        currentTarget.kind === "resource"
-          ? `${currentTarget.name} · прочность ${currentTarget.hp}/${currentTarget.maxHp}`
-          : currentTarget.name;
-      const button = document.getElementById("interact");
-      button.textContent = currentTarget.kind === "chest" ? "Открыть сундук" : "Добывать";
-      hit.style.display = currentTarget.kind === "resource" ? "block" : "none";
+        `${currentTarget.name} · x${currentTarget.count}`;
+
+      document.getElementById("interact").textContent = "Подобрать";
+      hit.style.display = "none";
     }
 
-    function mine() {
-      if (!currentTarget || currentTarget.kind !== "resource" || modalOpen) return;
+    function collectPickup() {
+      if (!currentTarget || currentTarget.kind !== "pickup" || modalOpen) return;
+
       const item = currentTarget;
-      const yieldCount = 1 + Math.floor(Math.random() * 2);
-      const added = addToInventory(item.type, yieldCount);
-      item.hp -= 1;
-      item.root.scale.setScalar(Math.max(0.45, item.hp / item.maxHp));
-      if (item.hp <= 0) {
+      const added = addToInventory(item.type, item.count);
+
+      if (added > 0) {
         scene.remove(item.root);
         const index = interactables.indexOf(item);
         if (index >= 0) interactables.splice(index, 1);
+        notify(`+${added} ${itemNames[item.type]}`);
+      } else {
+        notify("В инвентаре нет места");
       }
-      notify(`+${added} ${itemNames[item.type]}${item.hp <= 0 ? " · ресурс исчерпан" : ""}`);
+
       updateTarget();
     }
 
-    function openChest() {
+    function openInventory() {
       modalOpen = true;
       document.getElementById("modal").style.display = "flex";
       renderInventory();
     }
-    function closeChest() {
+
+    function closeInventory() {
       modalOpen = false;
       document.getElementById("modal").style.display = "none";
-      selectedPlayer = selectedChest = -1;
     }
 
-    document.getElementById("interact").addEventListener("click", () => {
-      if (!currentTarget) return;
-      if (currentTarget.kind === "chest") openChest();
-      else mine();
-    });
-    document.getElementById("hit").addEventListener("click", mine);
-    document.getElementById("closeModal").addEventListener("click", closeChest);
-    document.getElementById("modal").addEventListener("click", e => {
-      if (e.target.id === "modal") closeChest();
-    });
-    document.getElementById("inventoryButton").addEventListener("click", openChest);
-    document.getElementById("putItem").addEventListener("click", () => transfer(playerItems, chestItems, selectedPlayer));
-    document.getElementById("takeItem").addEventListener("click", () => transfer(chestItems, playerItems, selectedChest));
+    document.getElementById("interact").addEventListener("click", collectPickup);
+    document.getElementById("hit").addEventListener("click", collectPickup);
+    document.getElementById("closeModal").addEventListener("click", closeInventory);
+    document.getElementById("inventoryButton").addEventListener("click", openInventory);
 
-    function transfer(from, to, index) {
-      if (index < 0 || !from[index]) return;
-      const item = from[index];
-      let remaining = item.count;
-      for (const slot of to) {
-        if (slot && slot.type === item.type && slot.count < 99) {
-          const n = Math.min(remaining, 99 - slot.count);
-          slot.count += n; remaining -= n;
-          if (!remaining) break;
-        }
-      }
-      while (remaining > 0) {
-        const empty = to.findIndex(x => x === null);
-        if (empty < 0) break;
-        const n = Math.min(remaining, 99);
-        to[empty] = { type: item.type, count: n };
-        remaining -= n;
-      }
-      item.count = remaining;
-      if (item.count <= 0) from[index] = null;
-      renderHotbar(); renderInventory();
-    }
+    document.getElementById("modal").addEventListener("click", event => {
+      if (event.target.id === "modal") closeInventory();
+    });
 
     function slotHtml(item, index, active = false) {
-      if (!item) return `<div class="slot ${active ? "active" : ""}" data-index="${index}"></div>`;
-      return `<div class="slot ${active ? "active" : ""}" data-index="${index}">
-        ${itemIcons[item.type]}<small>${item.count}</small></div>`;
+      if (!item) {
+        return `<div class="slot ${active ? "active" : ""}" data-index="${index}"></div>`;
+      }
+
+      return `
+        <div class="slot ${active ? "active" : ""}" data-index="${index}">
+          ${itemIcons[item.type]}<small>${item.count}</small>
+        </div>
+      `;
     }
 
     function renderHotbar() {
       const bar = document.getElementById("hotbar");
       bar.innerHTML = "";
-      for (let i = 0; i < 4; i++) {
+
+      for (let i = 0; i < 8; i++) {
         const el = document.createElement("div");
         el.className = `slot ${selectedPlayer === i ? "selected" : ""}`;
-        el.innerHTML = playerItems[i] ? `${itemIcons[playerItems[i].type]}<small>${playerItems[i].count}</small>` : `${i+1}`;
-        el.addEventListener("click", () => { selectedPlayer = i; renderHotbar(); });
+        el.innerHTML = playerItems[i]
+          ? `${itemIcons[playerItems[i].type]}<small>${playerItems[i].count}</small>`
+          : `${i + 1}`;
+
+        el.addEventListener("click", () => {
+          selectedPlayer = i;
+          renderHotbar();
+          updateHeldItem();
+        });
+
         bar.appendChild(el);
       }
     }
 
     function renderInventory() {
-      const pg = document.getElementById("playerGrid");
-      const cg = document.getElementById("chestGrid");
-      pg.innerHTML = playerItems.map((it,i) => slotHtml(it,i,selectedPlayer===i)).join("");
-      cg.innerHTML = chestItems.map((it,i) => slotHtml(it,i,selectedChest===i)).join("");
-      pg.querySelectorAll(".slot").forEach(el => el.addEventListener("click", () => {
-        selectedPlayer = Number(el.dataset.index); renderInventory();
-      }));
-      cg.querySelectorAll(".slot").forEach(el => el.addEventListener("click", () => {
-        selectedChest = Number(el.dataset.index); renderInventory();
-      }));
+      const grid = document.getElementById("playerGrid");
+      grid.innerHTML = playerItems
+        .map((item, index) => slotHtml(item, index, selectedPlayer === index))
+        .join("");
+
+      grid.querySelectorAll(".slot").forEach(element => {
+        element.addEventListener("click", () => {
+          selectedPlayer = Number(element.dataset.index);
+          renderInventory();
+          renderHotbar();
+          updateHeldItem();
+        });
+      });
     }
 
-    // Большой динамический джойстик: начало касания в любой точке левой четверти.
+    // Джойстик: начать движение можно в левой четверти экрана.
     const joystick = document.getElementById("joystick");
     const stick = document.getElementById("stick");
     const joy = { id: null, cx: 0, cy: 0, x: 0, y: 0, radius: 55 };
     const leftZoneWidth = () => innerWidth * 0.25;
 
-    function startJoystick(e) {
-      if (joy.id !== null || modalOpen || e.clientX > leftZoneWidth()) return false;
-      joy.id = e.pointerId;
-      joy.cx = e.clientX; joy.cy = e.clientY;
+    function startJoystick(event) {
+      if (joy.id !== null || modalOpen || event.clientX > leftZoneWidth()) {
+        return false;
+      }
+
+      joy.id = event.pointerId;
+      joy.cx = event.clientX;
+      joy.cy = event.clientY;
       joy.x = joy.y = 0;
+
       joystick.style.display = "block";
       joystick.style.left = `${joy.cx}px`;
       joystick.style.top = `${joy.cy}px`;
       stick.style.transform = "translate(0,0)";
-      e.preventDefault();
+
+      event.preventDefault();
       return true;
     }
-    function moveJoystick(e) {
-      if (e.pointerId !== joy.id) return;
-      const dx = e.clientX - joy.cx, dy = e.clientY - joy.cy;
-      const len = Math.hypot(dx, dy), scale = len > joy.radius ? joy.radius / len : 1;
+
+    function moveJoystick(event) {
+      if (event.pointerId !== joy.id) return;
+
+      const dx = event.clientX - joy.cx;
+      const dy = event.clientY - joy.cy;
+      const length = Math.hypot(dx, dy);
+      const scale = length > joy.radius ? joy.radius / length : 1;
+
       joy.x = dx * scale / joy.radius;
       joy.y = dy * scale / joy.radius;
       stick.style.transform = `translate(${dx * scale}px, ${dy * scale}px)`;
     }
-    function endJoystick(e) {
-      if (e.pointerId !== joy.id) return;
-      joy.id = null; joy.x = joy.y = 0;
+
+    function endJoystick(event) {
+      if (event.pointerId !== joy.id) return;
+
+      joy.id = null;
+      joy.x = joy.y = 0;
       joystick.style.display = "none";
     }
 
-    let lookPointer = null, lastX = 0, lastY = 0;
-    renderer.domElement.addEventListener("pointerdown", e => {
-      if (startJoystick(e)) return;
-      if (e.clientX > leftZoneWidth() && !modalOpen) {
-        lookPointer = e.pointerId; lastX = e.clientX; lastY = e.clientY;
-        renderer.domElement.setPointerCapture(e.pointerId);
-      }
-    });
-    window.addEventListener("pointermove", e => {
-      moveJoystick(e);
-      if (e.pointerId === lookPointer) {
-        player.yaw -= (e.clientX - lastX) * 0.005;
-        player.pitch -= (e.clientY - lastY) * 0.004;
-        player.pitch = THREE.MathUtils.clamp(player.pitch, -1.25, 1.25);
-        lastX = e.clientX; lastY = e.clientY;
-      }
-    });
-    window.addEventListener("pointerup", e => {
-      endJoystick(e);
-      if (e.pointerId === lookPointer) lookPointer = null;
-    });
-    window.addEventListener("pointercancel", e => {
-      endJoystick(e);
-      if (e.pointerId === lookPointer) lookPointer = null;
-    });
+    let lookPointer = null;
+    let lastX = 0;
+    let lastY = 0;
 
-    document.getElementById("jump").addEventListener("pointerdown", e => {
-      e.preventDefault();
-      if (!modalOpen && player.grounded) {
-        player.vy = 6.2;
-        player.grounded = false;
-      }
-    });
+    renderer.domElement.addEventListener("pointerdown", event => {
+      if (startJoystick(event)) return;
 
-    const keys = {};
-    window.addEventListener("keydown", e => {
-      keys[e.code] = true;
-      if (e.code === "Space" && player.grounded && !modalOpen) {
-        player.vy = 6.2; player.grounded = false;
-      }
-      if (/^Digit[1-4]$/.test(e.code)) {
-        selectedPlayer = Number(e.code.slice(-1)) - 1; renderHotbar();
-      }
-      if (e.code === "Escape" && modalOpen) closeChest();
-    });
-    window.addEventListener("keyup", e => keys[e.code] = false);
-
-    let lastTime = performance.now();
-    function animate(now) {
-      requestAnimationFrame(animate);
-      const dt = Math.min((now - lastTime) / 1000, 0.05);
-      lastTime = now;
-
-      if (!modalOpen) {
-        let forward = -joy.y + (keys.KeyW || keys.ArrowUp ? 1 : 0) - (keys.KeyS || keys.ArrowDown ? 1 : 0);
-        let strafe = joy.x + (keys.KeyD || keys.ArrowRight ? 1 : 0) - (keys.KeyA || keys.ArrowLeft ? 1 : 0);
-        const magnitude = Math.hypot(forward, strafe);
-        if (magnitude > 1) { forward /= magnitude; strafe /= magnitude; }
-        const speed = 5.2;
-        player.x += (Math.sin(player.yaw) * forward + Math.cos(player.yaw) * strafe) * speed * dt;
-        player.z += (-Math.cos(player.yaw) * forward + Math.sin(player.yaw) * strafe) * speed * dt;
-
-        player.vy -= 17 * dt;
-        player.y += player.vy * dt;
-        if (player.y <= 0) { player.y = 0; player.vy = 0; player.grounded = true; }
-      }
-
-      setCamera();
-      updateTarget();
-      renderer.render(scene, camera);
-    }
-    requestAnimationFrame(animate);
-
-    function resize() {
-      camera.aspect = innerWidth / innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(innerWidth, innerHeight);
-      renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
-    }
-    window.addEventListener("resize", resize);
-    renderHotbar();
-  </script>
-</body>
-</html>
+      if (event.clientX > leftZoneWidth() && !modalOpen) {
+        lookPointer = event.pointerId;
+        lastX = event.clientX;
+        lastY = event*
