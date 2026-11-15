@@ -50,11 +50,11 @@
       position: absolute;
       top: 12px;
       left: 12px;
-      width: min(210px, 32vw);
+      width: min(205px, 30vw);
       padding: 8px;
       border: 1px solid #ffffff55;
       border-radius: 10px;
-      background: #17231dcc;
+      background: #17231ddd;
     }
     .statRow {
       display: grid;
@@ -71,31 +71,27 @@
       border-radius: 7px;
       background: #2229;
     }
-    .fill {
-      width: 100%;
-      height: 100%;
-      transition: width .2s ease;
-    }
+    .fill { width: 100%; height: 100%; transition: width .2s ease; }
     #healthFill { background: linear-gradient(90deg, #a72131, #f14b55); }
     #hungerFill { background: linear-gradient(90deg, #a86a1d, #f5cb4e); }
-    #statText { display: flex; justify-content: space-between; font-size: 10px; }
+    .statText { display: flex; justify-content: space-between; font-size: 10px; }
 
     #targetBox {
       position: absolute;
       top: calc(50% + 24px);
       left: 50%;
       display: none;
-      min-width: 150px;
+      min-width: 160px;
       padding: 8px 12px;
       transform: translateX(-50%);
       border: 1px solid #ffffff55;
       border-radius: 10px;
       background: #17231ee8;
       text-align: center;
-      pointer-events: auto;
+      font-size: 13px;
     }
-    #targetName { margin-bottom: 5px; font-weight: 700; }
-    #interact { padding: 8px 15px; border-radius: 9px; background: #468e52; }
+    #targetName { margin-bottom: 3px; font-weight: 700; }
+    #targetHelp { color: #d3e2d5; font-size: 11px; }
 
     #joystick {
       position: absolute;
@@ -120,47 +116,58 @@
       background: #ffffffaa;
     }
 
-    #jump {
+    #jump, #handButton {
       position: absolute;
       right: 18px;
-      bottom: 24px;
       display: grid;
-      width: 72px;
-      height: 72px;
+      width: 76px;
+      height: 76px;
       place-items: center;
       border: 3px solid #ffffffbb;
       border-radius: 50%;
-      background: linear-gradient(145deg, #70c4ff, #287ac0);
       box-shadow: 0 6px 0 #174d7d, 0 8px 18px #0006, inset 0 3px 8px #ffffff66;
-      font-size: 11px;
-      text-shadow: 0 1px 2px #174d7d;
       pointer-events: auto;
     }
-    #jump:active { transform: translateY(4px); }
+    #jump {
+      bottom: 20px;
+      background: linear-gradient(145deg, #70c4ff, #287ac0);
+      font-size: 11px;
+      text-shadow: 0 1px 2px #174d7d;
+    }
+    #jump:active, #handButton:active {
+      transform: translateY(4px);
+      box-shadow: 0 2px 0 #174d7d, 0 4px 12px #0006;
+    }
     #jumpArrow { display: block; margin-bottom: -2px; font-size: 22px; line-height: 20px; }
 
-    #placeButton, #eatButton, #inventoryButton {
+    #handButton {
+      right: 18px;
+      bottom: 110px;
+      border-color: #ffffffcc;
+      background: linear-gradient(145deg, #e1ad5f, #a75b2f);
+      box-shadow: 0 6px 0 #66391f, 0 8px 18px #0006, inset 0 3px 8px #ffffff66;
+      font-size: 30px;
+    }
+    #handLabel {
       position: absolute;
+      right: 9px;
+      bottom: 91px;
+      padding: 3px 7px;
+      border-radius: 6px;
+      background: #17231dcc;
+      font-size: 10px;
+    }
+
+    #inventoryButton {
+      position: absolute;
+      top: 12px;
+      right: 12px;
       padding: 9px 12px;
       border: 1px solid #ffffff66;
       border-radius: 9px;
       background: #17231ddd;
       pointer-events: auto;
     }
-    #placeButton {
-      right: 100px;
-      bottom: 32px;
-      display: none;
-      background: #8b5a2bcc;
-      box-shadow: 0 4px 0 #4c3019;
-    }
-    #eatButton {
-      right: 100px;
-      bottom: 32px;
-      display: none;
-      background: #8a3150dd;
-    }
-    #inventoryButton { top: 12px; right: 12px; }
 
     #hotbar {
       position: absolute;
@@ -189,16 +196,15 @@
 
     #heldName {
       position: absolute;
-      bottom: 62px;
+      bottom: 59px;
       left: 50%;
       display: none;
       padding: 5px 10px;
       transform: translateX(-50%);
       border-radius: 8px;
-      background: #17231dd9;
+      background: #17231ddd;
       font-size: 13px;
       white-space: nowrap;
-      pointer-events: none;
     }
 
     #hint {
@@ -217,10 +223,11 @@
       top: 18%;
       left: 50%;
       display: none;
+      max-width: 85vw;
       padding: 9px 14px;
       transform: translateX(-50%);
       border-radius: 9px;
-      background: #17231de8;
+      background: #17231eea;
       text-align: center;
     }
 
@@ -235,7 +242,7 @@
       pointer-events: auto;
     }
     #panel {
-      width: min(96vw, 700px);
+      width: min(96vw, 780px);
       max-height: 94vh;
       overflow: auto;
       padding: 14px;
@@ -248,7 +255,7 @@
       align-items: center;
       justify-content: space-between;
       gap: 10px;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
     #panel h2 { margin: 0; font-size: 17px; }
     #closeModal, #restartButton {
@@ -257,12 +264,17 @@
       background: #80504b;
     }
 
+    #craftLayout {
+      display: grid;
+      grid-template-columns: minmax(210px, 1fr) minmax(180px, .8fr);
+      gap: 12px;
+    }
     #craftArea {
       display: grid;
       grid-template-columns: 1fr auto 1fr;
       align-items: center;
-      gap: 14px;
-      margin-bottom: 15px;
+      gap: 9px;
+      margin-bottom: 12px;
       padding: 10px;
       border-radius: 10px;
       background: #101a15aa;
@@ -271,24 +283,51 @@
     .craftGrid { display: grid; grid-template-columns: repeat(3, 42px); gap: 4px; }
     .craftGrid.two { grid-template-columns: repeat(2, 42px); }
     .craftGrid .slot, #craftOutput { width: 42px; height: 42px; }
-    #craftArrow { color: #ffe66d; font-size: 26px; }
+    #craftArrow { color: #ffe66d; font-size: 24px; }
     #craftOutput { border-color: #ffe66d99; background: #384831; }
-    #inventoryGrid { display: grid; grid-template-columns: repeat(10, 1fr); gap: 5px; }
-    #inventoryGrid .slot { width: 100%; height: 46px; }
-    #craftHelp { margin-top: 8px; color: #c3d0c6; font-size: 12px; }
+    #craftHelp { margin-top: 7px; color: #c3d0c6; font-size: 11px; line-height: 1.35; }
 
-    #deadScreen {
-      z-index: 5;
-      color: white;
-      text-align: center;
+    #recipePanel {
+      padding: 10px;
+      border-radius: 10px;
+      background: #101a15aa;
     }
+    #recipeList { display: grid; gap: 5px; }
+    .recipeHint {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 7px;
+      padding: 6px 8px;
+      border: 1px solid #ffffff22;
+      border-radius: 7px;
+      background: #29382e;
+      font-size: 11px;
+    }
+    .recipeHint.ready {
+      border-color: #78d28c99;
+      background: #284b32;
+      cursor: pointer;
+    }
+    .recipeHint .recipeStatus { color: #b7c5ba; font-size: 10px; white-space: nowrap; }
+    .recipeHint.ready .recipeStatus { color: #a9f4b7; }
+
+    #inventoryGrid {
+      display: grid;
+      grid-template-columns: repeat(10, 1fr);
+      gap: 5px;
+      margin-top: 6px;
+    }
+    #inventoryGrid .slot { width: 100%; height: 45px; touch-action: none; }
+    #inventoryTitle { margin-top: 12px; }
+
+    #deadScreen { z-index: 5; text-align: center; }
     #deadPanel {
       padding: 24px;
       border: 1px solid #ffffff66;
       border-radius: 14px;
       background: #1c2a22;
     }
-    #deadPanel h1 { margin-top: 0; }
 
     #rotate { display: none; }
     @media (orientation: portrait) {
@@ -305,9 +344,11 @@
         font-size: 20px;
       }
     }
-    @media (max-width: 600px) {
+    @media (max-width: 640px) {
       #inventoryGrid { grid-template-columns: repeat(6, 1fr); }
-      #craftArea { gap: 7px; padding: 7px; }
+      #craftLayout { grid-template-columns: 1fr; }
+      #recipePanel { order: 2; }
+      #craftArea { gap: 7px; }
       .craftGrid { grid-template-columns: repeat(3, 36px); gap: 3px; }
       .craftGrid.two { grid-template-columns: repeat(2, 36px); }
       .craftGrid .slot, #craftOutput { width: 36px; height: 36px; }
@@ -315,7 +356,8 @@
     }
     @media (max-height: 430px) {
       #jump { right: 13px; bottom: 13px; width: 62px; height: 62px; }
-      #placeButton, #eatButton { right: 82px; bottom: 20px; padding: 7px; font-size: 11px; }
+      #handButton { right: 13px; bottom: 83px; width: 62px; height: 62px; font-size: 25px; }
+      #handLabel { right: 4px; bottom: 68px; }
       #hotbar { bottom: 4px; }
       .slot { width: 37px; height: 39px; }
       #hint { top: 7px; }
@@ -332,21 +374,21 @@
 
     <div id="status">
       <div class="statRow"><span>❤️</span><div class="bar"><div id="healthFill" class="fill"></div></div></div>
-      <div id="statText"><span>Здоровье</span><span id="healthText">100 / 100</span></div>
+      <div class="statText"><span>Здоровье</span><span id="healthText">100 / 100</span></div>
       <div class="statRow"><span>🍗</span><div class="bar"><div id="hungerFill" class="fill"></div></div></div>
-      <div id="statText"><span>Сытость</span><span id="hungerText">100 / 100</span></div>
+      <div class="statText"><span>Сытость</span><span id="hungerText">100 / 100</span></div>
     </div>
 
     <div id="targetBox">
       <div id="targetName"></div>
-      <button id="interact">Взять</button>
+      <div id="targetHelp">Нажмите кнопку руки</div>
     </div>
 
     <div id="joystick"><div id="stick"></div></div>
 
     <button id="jump"><span><span id="jumpArrow">⬆</span>ПРЫЖОК</span></button>
-    <button id="placeButton">Поставить верстак</button>
-    <button id="eatButton">Съесть ягоду</button>
+    <button id="handButton" aria-label="Действие">🖐️</button>
+    <div id="handLabel">ДЕЙСТВИЕ</div>
     <button id="inventoryButton">Инвентарь</button>
 
     <div id="hotbar"></div>
@@ -361,25 +403,34 @@
           <button id="closeModal">Закрыть</button>
         </div>
 
-        <div id="craftArea">
-          <div>
-            <div class="craftLabel" id="craftLabel">Крафт 2×2</div>
-            <div class="craftGrid two" id="craftGrid"></div>
-          </div>
-          <div id="craftArrow">➜</div>
-          <div>
-            <div class="craftLabel">Результат</div>
-            <div class="slot" id="craftOutput"></div>
-          </div>
+        <div id="craftLayout">
+          <section>
+            <div id="craftArea">
+              <div>
+                <div class="craftLabel" id="craftLabel">Крафт 2×2</div>
+                <div class="craftGrid two" id="craftGrid"></div>
+              </div>
+              <div id="craftArrow">➜</div>
+              <div>
+                <div class="craftLabel">Результат</div>
+                <div class="slot" id="craftOutput"></div>
+              </div>
+            </div>
+            <div id="craftHelp">
+              Выберите предмет в инвентаре, затем нажмите пустую клетку крафта.
+              Нажмите занятую клетку, чтобы вернуть предмет.
+            </div>
+          </section>
+
+          <section id="recipePanel">
+            <div class="craftLabel">Подсказки рецептов · нажмите готовый рецепт</div>
+            <div id="recipeList"></div>
+          </section>
         </div>
 
-        <div id="craftHelp">
-          Нажмите на предмет в инвентаре, чтобы положить его в сетку.
-          Нажмите на ингредиент в сетке, чтобы вернуть его.
-        </div>
-
-        <div class="craftLabel">Инвентарь · 30 слотов</div>
+        <div class="craftLabel" id="inventoryTitle">Инвентарь · 30 слотов</div>
         <div id="inventoryGrid"></div>
+        <div id="craftHelp">Перетащите предмет в другой слот. Удерживайте предмет 3 секунды, чтобы разделить стопку.</div>
       </div>
     </div>
 
@@ -397,25 +448,24 @@
 
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x87ceeb);
-    scene.fog = new THREE.Fog(0x87ceeb, 35, 100);
+    scene.fog = new THREE.Fog(0x87ceeb, 55, 190);
 
-    const camera = new THREE.PerspectiveCamera(70, innerWidth / innerHeight, 0.1, 150);
+    const camera = new THREE.PerspectiveCamera(70, innerWidth / innerHeight, 0.1, 260);
     const renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+    renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5));
     renderer.setSize(innerWidth, innerHeight);
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     document.body.appendChild(renderer.domElement);
 
     scene.add(new THREE.HemisphereLight(0xdff4ff, 0x53613d, 2));
-
-    const sun = new THREE.DirectionalLight(0xfff1d0, 2.2);
-    sun.position.set(-15, 25, 12);
+    const sun = new THREE.DirectionalLight(0xfff1d0, 2.1);
+    sun.position.set(-25, 38, 18);
     sun.castShadow = true;
     scene.add(sun);
 
     const ground = new THREE.Mesh(
-      new THREE.PlaneGeometry(200, 200),
+      new THREE.PlaneGeometry(300, 300),
       new THREE.MeshStandardMaterial({ color: 0x5c9b50, roughness: 1 })
     );
     ground.rotation.x = -Math.PI / 2;
@@ -423,19 +473,20 @@
     scene.add(ground);
 
     const player = {
-      x: 0, z: 8, y: 0, vy: 0, yaw: 0, pitch: 0, grounded: true,
-      health: 100, hunger: 100, dead: false
+      x: 0, z: 8, y: 0, vy: 0, yaw: 0, pitch: 0,
+      grounded: true, health: 100, hunger: 100, dead: false
     };
 
     const pickups = [];
     const workbenches = [];
+    const obstacles = [];
     const raycaster = new THREE.Raycaster();
     raycaster.far = 3.5;
 
     const playerItems = Array(30).fill(null);
     const craftSlots = Array(9).fill(null);
 
-    const itemNames = {
+    const names = {
       wood: "Ветка",
       stone: "Маленький камень",
       plank: "Доска",
@@ -450,37 +501,22 @@
       berry_red: "Красная ягода"
     };
 
-    const itemIcons = {
-      wood: "🪵",
-      stone: "🪨",
-      plank: "🟫",
-      stick: "🥢",
-      table: "🪚",
-      wooden_pickaxe: "⛏️",
-      wooden_axe: "🪓",
-      stone_pickaxe: "⛏️",
-      stone_axe: "🪓",
-      berry_wild: "🫐",
-      berry_blue: "🔵",
-      berry_red: "🔴"
+    const icons = {
+      wood: "🪵", stone: "🪨", plank: "🟫", stick: "🥢", table: "🪚",
+      wooden_pickaxe: "⛏️", wooden_axe: "🪓",
+      stone_pickaxe: "⛏️", stone_axe: "🪓",
+      berry_wild: "🫐", berry_blue: "🔵", berry_red: "🔴"
     };
 
-    const foodValues = {
-      berry_wild: 18,
-      berry_blue: 25,
-      berry_red: 32
-    };
-
+    const berryFood = { berry_wild: 5, berry_blue: 5, berry_red: 5 };
     let selectedSlot = -1;
     let currentTarget = null;
     let modalOpen = false;
     let workbenchCrafting = false;
     let activeRecipe = null;
-    let toastTimer;
-    let nameTimer;
-    let hungerTimer = 0;
-    let starvationTimer = 0;
-    let walkTime = 0;
+    let toastTimer, nameTimer;
+    let hungerTimer = 0, starvationTimer = 0, walkTime = 0;
+    let longPress = null;
 
     function notify(text) {
       const toast = document.getElementById("toast");
@@ -493,39 +529,30 @@
     function updateStatus() {
       document.getElementById("healthFill").style.width = `${player.health}%`;
       document.getElementById("hungerFill").style.width = `${player.hunger}%`;
-      document.getElementById("healthText").textContent =
-        `${Math.ceil(player.health)} / 100`;
-      document.getElementById("hungerText").textContent =
-        `${Math.ceil(player.hunger)} / 100`;
-
-      document.getElementById("hungerFill").style.filter =
-        player.hunger < 25 ? "brightness(.75)" : "none";
+      document.getElementById("healthText").textContent = `${Math.ceil(player.health)} / 100`;
+      document.getElementById("hungerText").textContent = `${Math.ceil(player.hunger)} / 100`;
     }
 
     function showSelectedName() {
-      const nameElement = document.getElementById("heldName");
+      const label = document.getElementById("heldName");
       const item = selectedSlot >= 0 ? playerItems[selectedSlot] : null;
-
       if (!item) {
-        nameElement.style.display = "none";
+        label.style.display = "none";
         return;
       }
-
-      nameElement.textContent = itemNames[item.type] || item.type;
-      nameElement.style.display = "block";
+      label.textContent = names[item.type] || item.type;
+      label.style.display = "block";
       clearTimeout(nameTimer);
-      nameTimer = setTimeout(() => {
-        nameElement.style.display = "none";
-      }, 2000);
+      nameTimer = setTimeout(() => label.style.display = "none", 2000);
     }
 
     function canFit(type, amount) {
-      let capacity = 0;
+      let space = 0;
       for (const slot of playerItems) {
-        if (!slot) capacity += 99;
-        else if (slot.type === type) capacity += 99 - slot.count;
+        if (!slot) space += 99;
+        else if (slot.type === type) space += 99 - slot.count;
       }
-      return capacity >= amount;
+      return space >= amount;
     }
 
     function addItem(type, amount) {
@@ -541,21 +568,21 @@
       }
 
       while (left > 0) {
-        const empty = playerItems.findIndex(slot => slot === null);
-        if (empty < 0) break;
+        const empty = playerItems.findIndex(slot => !slot);
+        if (empty === -1) break;
         const n = Math.min(left, 99);
         playerItems[empty] = { type, count: n };
         left -= n;
       }
 
       renderAll();
-      if (left > 0) notify("Инвентарь заполнен");
+      if (left) notify("Инвентарь заполнен");
       return amount - left;
     }
 
-    function consumeOne(slot) {
+    function takeOne(slot) {
       if (!slot) return null;
-      slot.count -= 1;
+      slot.count--;
       return slot.count > 0 ? slot : null;
     }
 
@@ -564,47 +591,49 @@
       root.position.set(x, 0, z);
 
       const trunk = new THREE.Mesh(
-        new THREE.CylinderGeometry(0.25, 0.38, 2.1, 7),
+        new THREE.CylinderGeometry(0.35, 0.52, 3.0, 8),
         new THREE.MeshStandardMaterial({ color: 0x76502d })
       );
-      trunk.position.y = 1.05;
+      trunk.position.y = 1.5;
       trunk.castShadow = true;
       trunk.receiveShadow = true;
       root.add(trunk);
 
       const leaves = new THREE.Mesh(
-        new THREE.ConeGeometry(1.25, 3.1, 8),
+        new THREE.ConeGeometry(1.65, 4.0, 8),
         new THREE.MeshStandardMaterial({ color: 0x287a3e })
       );
-      leaves.position.y = 3.1;
+      leaves.position.y = 4;
       leaves.castShadow = true;
       root.add(leaves);
       scene.add(root);
+      obstacles.push({ x, z, radius: 0.72 });
     }
 
     function makeLargeRock(x, z) {
       const root = new THREE.Group();
       root.position.set(x, 0, z);
-
       const rock = new THREE.Mesh(
-        new THREE.DodecahedronGeometry(0.8, 1),
+        new THREE.DodecahedronGeometry(1.0, 1),
         new THREE.MeshStandardMaterial({ color: 0x858b8e, roughness: 1 })
       );
-      rock.position.y = 0.55;
-      rock.scale.set(1.2, 0.8, 1);
+      rock.position.y = 0.68;
+      rock.scale.set(1.25, 0.82, 1.1);
       rock.castShadow = true;
+      rock.receiveShadow = true;
       root.add(rock);
       scene.add(root);
+      obstacles.push({ x, z, radius: 1.0 });
     }
 
     function makePickup(type, x, z, rotation = Math.random() * Math.PI) {
       const root = new THREE.Group();
-      root.position.set(x, 0.04, z);
+      root.position.set(x, 0.035, z);
       root.rotation.y = rotation;
 
       if (type === "wood") {
         const branch = new THREE.Mesh(
-          new THREE.CylinderGeometry(0.045, 0.065, 0.68, 6),
+          new THREE.CylinderGeometry(0.05, 0.07, 0.78, 6),
           new THREE.MeshStandardMaterial({ color: 0x82572f })
         );
         branch.rotation.z = Math.PI / 2;
@@ -612,47 +641,45 @@
         branch.castShadow = true;
         root.add(branch);
       } else if (type === "stone") {
-        const stone = new THREE.Mesh(
-          new THREE.DodecahedronGeometry(0.19, 0),
+        const rock = new THREE.Mesh(
+          new THREE.DodecahedronGeometry(0.22, 0),
           new THREE.MeshStandardMaterial({ color: 0x858b8e, roughness: 1 })
         );
-        stone.position.y = 0.13;
-        stone.scale.set(1.25, 0.72, 1);
-        stone.castShadow = true;
-        root.add(stone);
+        rock.position.y = 0.13;
+        rock.scale.set(1.3, 0.72, 1);
+        rock.castShadow = true;
+        root.add(rock);
 
-        const smallStone = new THREE.Mesh(
-          new THREE.DodecahedronGeometry(0.105, 0),
-          new THREE.MeshStandardMaterial({ color: 0x9ca1a2, roughness: 1 })
+        const small = new THREE.Mesh(
+          new THREE.DodecahedronGeometry(0.12, 0),
+          new THREE.MeshStandardMaterial({ color: 0xa2a7a8, roughness: 1 })
         );
-        smallStone.position.set(0.18, 0.08, 0.1);
-        root.add(smallStone);
+        small.position.set(0.19, 0.08, 0.1);
+        root.add(small);
       } else {
-        const colors = {
-          berry_wild: 0x73417d,
+        const berryColors = {
+          berry_wild: 0x754184,
           berry_blue: 0x306bd1,
           berry_red: 0xc92d3b
         };
         const bush = new THREE.Mesh(
-          new THREE.SphereGeometry(0.22, 8, 7),
+          new THREE.SphereGeometry(0.31, 8, 7),
           new THREE.MeshStandardMaterial({ color: 0x356b36 })
         );
-        bush.scale.set(1.15, 0.65, 1);
-        bush.position.y = 0.13;
+        bush.scale.set(1.15, 0.67, 1);
+        bush.position.y = 0.2;
+        bush.castShadow = true;
         root.add(bush);
 
-        const berryMaterial = new THREE.MeshStandardMaterial({
-          color: colors[type],
-          roughness: 0.5
-        });
-        for (const [bx, by, bz] of [[-0.1,0.2,0.08], [0.08,0.19,0.13], [0.02,0.12,-0.13]]) {
-          const berry = new THREE.Mesh(new THREE.SphereGeometry(0.07, 8, 6), berryMaterial);
-          berry.position.set(bx, by, bz);
-          root.add(berry);
+        const fruitMaterial = new THREE.MeshStandardMaterial({ color: berryColors[type] });
+        for (const [bx, by, bz] of [[-0.14,0.27,0.08], [0.09,0.25,0.18], [0.12,0.18,-0.13], [-0.08,0.18,-0.18]]) {
+          const fruit = new THREE.Mesh(new THREE.SphereGeometry(0.075, 8, 6), fruitMaterial);
+          fruit.position.set(bx, by, bz);
+          root.add(fruit);
         }
       }
 
-      const pickup = { kind: "pickup", type, name: itemNames[type], root };
+      const pickup = { kind: "pickup", type, name: names[type], root };
       root.traverse(object => {
         if (object.isMesh) object.userData.entity = pickup;
       });
@@ -666,67 +693,86 @@
 
       const darkWood = new THREE.MeshStandardMaterial({ color: 0x65401f, roughness: 0.9 });
       const topWood = new THREE.MeshStandardMaterial({ color: 0xa47743, roughness: 0.8 });
-      const topDark = new THREE.MeshStandardMaterial({ color: 0x80552f, roughness: 0.9 });
+      const stripeWood = new THREE.MeshStandardMaterial({ color: 0x80552f, roughness: 0.9 });
 
-      // Толстая столешница, обрамление и заметные ножки.
-      const top = new THREE.Mesh(new THREE.BoxGeometry(1.55, 0.22, 1.25), topWood);
-      top.position.y = 0.94;
+      const top = new THREE.Mesh(new THREE.BoxGeometry(1.7, 0.22, 1.35), topWood);
+      top.position.y = 1.02;
       top.castShadow = true;
       top.receiveShadow = true;
       root.add(top);
 
-      const inset = new THREE.Mesh(new THREE.BoxGeometry(1.25, 0.035, 0.95), topDark);
-      inset.position.y = 1.07;
-      root.add(inset);
+      // Четыре доски на поверхности верстака.
+      for (let i = 0; i < 4; i++) {
+        const plank = new THREE.Mesh(new THREE.BoxGeometry(0.77, 0.045, 0.57), stripeWood);
+        plank.position.set(i % 2 === 0 ? -0.39 : 0.39, 1.15, i < 2 ? -0.29 : 0.29);
+        root.add(plank);
+      }
 
-      for (const [lx, lz] of [[-0.58,-0.43], [0.58,-0.43], [-0.58,0.43], [0.58,0.43]]) {
-        const leg = new THREE.Mesh(new THREE.BoxGeometry(0.19, 0.86, 0.19), darkWood);
-        leg.position.set(lx, 0.43, lz);
+      for (const [lx, lz] of [[-0.62,-0.48], [0.62,-0.48], [-0.62,0.48], [0.62,0.48]]) {
+        const leg = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.9, 0.2), darkWood);
+        leg.position.set(lx, 0.45, lz);
         leg.castShadow = true;
         root.add(leg);
       }
 
-      // Поперечины и декоративная планка спереди.
-      const rail = new THREE.Mesh(new THREE.BoxGeometry(1.18, 0.13, 0.12), darkWood);
-      rail.position.set(0, 0.56, 0.44);
-      root.add(rail);
+      const railFront = new THREE.Mesh(new THREE.BoxGeometry(1.32, 0.15, 0.14), darkWood);
+      railFront.position.set(0, 0.61, 0.49);
+      root.add(railFront);
+      const railBack = railFront.clone();
+      railBack.position.z = -0.49;
+      root.add(railBack);
 
-      const marker = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.09, 0.08), darkWood);
-      marker.position.set(0, 1.12, -0.5);
-      root.add(marker);
+      const tool = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.07, 0.08), darkWood);
+      tool.position.set(0.22, 1.24, 0.42);
+      tool.rotation.z = -0.16;
+      root.add(tool);
 
-      const item = { kind: "workbench", name: "Верстак", root };
+      const entity = { kind: "workbench", name: "Верстак", root };
       root.traverse(object => {
-        if (object.isMesh) object.userData.entity = item;
+        if (object.isMesh) object.userData.entity = entity;
       });
-
       scene.add(root);
-      workbenches.push(item);
-      return item;
+      workbenches.push(entity);
+      obstacles.push({ x, z, radius: 0.96 });
+      return entity;
     }
 
-    [
-      [-7,-4], [-5,4], [-9,7], [5,-6], [9,1], [7,9],
-      [-2,-10], [12,-8], [-12,-2], [3,13], [-13,10], [14,6]
-    ].forEach(([x, z], i) => i % 2 === 0 ? makeTree(x, z) : makeLargeRock(x, z));
+    // Деревья и камни распределены по большому миру.
+    function randomWorldPoint(minDistanceFromStart = 17) {
+      for (let attempt = 0; attempt < 100; attempt++) {
+        const x = THREE.MathUtils.randFloat(-130, 130);
+        const z = THREE.MathUtils.randFloat(-130, 130);
+        if (Math.hypot(x - player.x, z - player.z) > minDistanceFromStart) return [x, z];
+      }
+      return [Math.random() * 200 - 100, Math.random() * 200 - 100];
+    }
 
-    [
-      ["wood",-3,5], ["stone",2,3], ["wood",4,7], ["stone",-6,1],
-      ["wood",8,-2], ["stone",6,4], ["wood",-1,-5], ["stone",10,5],
-      ["wood",-10,3], ["stone",-4,10], ["wood",12,1], ["stone",1,12],
-      ["wood",5,-10], ["stone",-11,-5], ["wood",9,11], ["stone",-7,-9],
-      ["wood",-2,13], ["stone",13,-5]
-    ].forEach(([type, x, z]) => makePickup(type, x, z));
+    for (let i = 0; i < 85; i++) {
+      const [x, z] = randomWorldPoint();
+      makeTree(x, z);
+    }
+    for (let i = 0; i < 70; i++) {
+      const [x, z] = randomWorldPoint();
+      makeLargeRock(x, z);
+    }
 
-    // Несколько разных ягодных кустиков.
-    [
-      ["berry_wild",-2,2], ["berry_blue",3,5], ["berry_red",-5,7],
-      ["berry_blue",7,2], ["berry_red",-8,-1], ["berry_wild",1,-4],
-      ["berry_red",11,8], ["berry_blue",-3,12], ["berry_wild",8,-8],
-      ["berry_blue",-12,5], ["berry_red",5,12], ["berry_wild",13,-2]
-    ].forEach(([type, x, z]) => makePickup(type, x, z));
+    // Много веток и небольших камней.
+    for (let i = 0; i < 130; i++) {
+      const [x, z] = randomWorldPoint(5);
+      makePickup("wood", x, z);
+    }
+    for (let i = 0; i < 120; i++) {
+      const [x, z] = randomWorldPoint(5);
+      makePickup("stone", x, z);
+    }
 
-    // Руки, ноги и предмет в руке от первого лица.
+    // Несколько цветов ягодных кустов по всему миру.
+    const berryTypes = ["berry_wild", "berry_blue", "berry_red"];
+    for (let i = 0; i < 75; i++) {
+      const [x, z] = randomWorldPoint(9);
+      makePickup(berryTypes[i % berryTypes.length], x, z);
+    }
+
     const viewModel = new THREE.Group();
     camera.add(viewModel);
     scene.add(camera);
@@ -760,7 +806,7 @@
       const wood = new THREE.MeshStandardMaterial({ color: 0x81542f });
       const stone = new THREE.MeshStandardMaterial({ color: 0x858b8e });
       const berryColors = {
-        berry_wild: 0x73417d,
+        berry_wild: 0x754184,
         berry_blue: 0x306bd1,
         berry_red: 0xc92d3b
       };
@@ -794,16 +840,19 @@
         heldObject.add(berry);
       } else if (type === "stone") {
         heldObject.add(new THREE.Mesh(new THREE.DodecahedronGeometry(0.15, 0), stone));
-      } else {
-        const block = new THREE.Mesh(
-          new THREE.BoxGeometry(0.25, 0.25, 0.25),
+      } else if (type === "stick") {
+        const stick = new THREE.Mesh(
+          new THREE.CylinderGeometry(0.035, 0.035, 0.45, 6),
           wood
         );
-        heldObject.add(block);
+        stick.rotation.z = -0.45;
+        heldObject.add(stick);
+      } else {
+        heldObject.add(new THREE.Mesh(new THREE.BoxGeometry(0.25, 0.25, 0.25), wood));
       }
     }
 
-    function getSelectedType() {
+    function selectedType() {
       return selectedSlot >= 0 && playerItems[selectedSlot]
         ? playerItems[selectedSlot].type
         : null;
@@ -816,16 +865,11 @@
       camera.rotation.x = player.pitch;
     }
 
-    // Крафт всегда сравнивает всю сетку, включая пустые клетки.
-    // Поэтому рецепт верстака невозможно собрать из одной доски.
+    // Рецепт доски теперь строго требует 4 ветки.
     const recipes2 = [
-      { pattern: [["wood"]], result: { type: "plank", count: 4 } },
+      { pattern: [["wood","wood"], ["wood","wood"]], result: { type: "plank", count: 1 } },
       { pattern: [["plank"], ["plank"]], result: { type: "stick", count: 4 } },
-      {
-        pattern: [["plank","plank"], ["plank","plank"]],
-        result: { type: "table", count: 1 },
-        exact: true
-      }
+      { pattern: [["plank","plank"], ["plank","plank"]], result: { type: "table", count: 1 } }
     ];
 
     const toolRecipes = [
@@ -837,11 +881,9 @@
       { pattern: [["stone","stone",null], ["stick","stone",null], ["stick",null,null]], result: { type: "stone_axe", count: 1 } }
     ];
 
-    function getGridSize() {
-      return workbenchCrafting ? 3 : 2;
-    }
+    function gridSize() { return workbenchCrafting ? 3 : 2; }
 
-    function matchRecipe(recipe, size) {
+    function recipeMatches(recipe, size) {
       const pattern = recipe.pattern;
       const ph = pattern.length;
       const pw = Math.max(...pattern.map(row => row.length));
@@ -865,84 +907,148 @@
               if (expected !== null) used.push(index);
             }
           }
-
           if (matches) return used;
         }
       }
       return null;
     }
 
-    function findRecipe() {
-      const size = getGridSize();
-      const available = workbenchCrafting
-        ? [...recipes2, ...toolRecipes]
-        : recipes2;
-
-      for (const recipe of available) {
-        const used = matchRecipe(recipe, size);
+    function findMatrixRecipe() {
+      const recipes = workbenchCrafting ? [...recipes2, ...toolRecipes] : recipes2;
+      for (const recipe of recipes) {
+        const used = recipeMatches(recipe, gridSize());
         if (used) return { recipe, used };
       }
       return null;
     }
 
-    function refreshRecipe() {
-      activeRecipe = findRecipe();
-      const output = document.getElementById("craftOutput");
-      output.innerHTML = "";
-
-      if (activeRecipe) {
-        const result = activeRecipe.recipe.result;
-        output.innerHTML = `${itemIcons[result.type]}<small>${result.count}</small>`;
+    function countIngredients(recipe) {
+      const counts = {};
+      for (const row of recipe.pattern) {
+        for (const type of row) {
+          if (type) counts[type] = (counts[type] || 0) + 1;
+        }
       }
+      return counts;
+    }
+
+    function hasIngredients(recipe) {
+      const counts = countIngredients(recipe);
+      return Object.entries(counts).every(([type, count]) => {
+        const total = playerItems.reduce((sum, slot) =>
+          sum + (slot?.type === type ? slot.count : 0), 0);
+        return total >= count;
+      });
+    }
+
+    function consumeIngredients(recipe) {
+      const counts = countIngredients(recipe);
+      for (const [type, needed] of Object.entries(counts)) {
+        let left = needed;
+        for (let i = 0; i < playerItems.length && left > 0; i++) {
+          const slot = playerItems[i];
+          if (!slot || slot.type !== type) continue;
+          const take = Math.min(left, slot.count);
+          slot.count -= take;
+          left -= take;
+          if (slot.count <= 0) playerItems[i] = null;
+        }
+      }
+    }
+
+    function autoCraft(recipe) {
+      if (!hasIngredients(recipe)) return;
+      const result = recipe.result;
+      if (!canFit(result.type, result.count)) {
+        notify("В инвентаре нет места");
+        return;
+      }
+      consumeIngredients(recipe);
+      addItem(result.type, result.count);
+      notify(`Создано: ${names[result.type]}`);
+    }
+
+    function renderRecipeHints() {
+      const list = document.getElementById("recipeList");
+      list.innerHTML = "";
+      const recipes = workbenchCrafting ? [...recipes2, ...toolRecipes] : recipes2;
+
+      recipes.forEach(recipe => {
+        const ready = hasIngredients(recipe);
+        const ingredientCounts = countIngredients(recipe);
+        const ingredients = Object.entries(ingredientCounts)
+          .map(([type, count]) => `${icons[type]}×${count}`)
+          .join(" ");
+        const hint = document.createElement("div");
+        hint.className = `recipeHint ${ready ? "ready" : ""}`;
+        hint.innerHTML = `<span>${icons[recipe.result.type]} ${names[recipe.result.type]}<br><small>${ingredients}</small></span>
+          <span class="recipeStatus">${ready ? "Создать" : "Нет ресурсов"}</span>`;
+        if (ready) hint.addEventListener("click", () => autoCraft(recipe));
+        list.appendChild(hint);
+      });
     }
 
     function renderCraftGrid() {
       const grid = document.getElementById("craftGrid");
-      const size = getGridSize();
+      const size = gridSize();
       grid.className = `craftGrid ${size === 2 ? "two" : ""}`;
       grid.innerHTML = "";
 
       for (let i = 0; i < size * size; i++) {
-        const item = craftSlots[i];
         const element = document.createElement("div");
         element.className = "slot";
-
-        if (item) element.innerHTML = `${itemIcons[item.type]}<small>${item.count}</small>`;
+        if (craftSlots[i]) {
+          element.innerHTML = `${icons[craftSlots[i].type]}<small>${craftSlots[i].count}</small>`;
+        }
 
         element.addEventListener("click", () => {
-          if (!craftSlots[i]) return;
-          const itemInGrid = craftSlots[i];
-          if (!canFit(itemInGrid.type, 1)) {
-            notify("В инвентаре нет места");
+          if (craftSlots[i]) {
+            const item = craftSlots[i];
+            if (!canFit(item.type, 1)) {
+              notify("В инвентаре нет места");
+              return;
+            }
+            addItem(item.type, 1);
+            craftSlots[i] = takeOne(item);
+            renderAll();
             return;
           }
-          addItem(itemInGrid.type, 1);
-          craftSlots[i] = consumeOne(itemInGrid);
+
+          const source = selectedSlot >= 0 ? playerItems[selectedSlot] : null;
+          if (!source) return;
+
+          craftSlots[i] = { type: source.type, count: 1 };
+          playerItems[selectedSlot] = takeOne(source);
           renderAll();
         });
 
         grid.appendChild(element);
       }
 
-      refreshRecipe();
+      activeRecipe = findMatrixRecipe();
+      const output = document.getElementById("craftOutput");
+      output.innerHTML = "";
+      if (activeRecipe) {
+        const result = activeRecipe.recipe.result;
+        output.innerHTML = `${icons[result.type]}<small>${result.count}</small>`;
+      }
     }
 
-    function craft() {
+    function craftFromMatrix() {
       if (!activeRecipe) return;
-
       const result = activeRecipe.recipe.result;
+
       if (!canFit(result.type, result.count)) {
         notify("В инвентаре нет места");
         return;
       }
 
       for (const index of activeRecipe.used) {
-        craftSlots[index] = consumeOne(craftSlots[index]);
+        craftSlots[index] = takeOne(craftSlots[index]);
       }
-
       addItem(result.type, result.count);
       renderAll();
-      notify(`Создано: ${itemNames[result.type]}`);
+      notify(`Создано: ${names[result.type]}`);
     }
 
     function renderInventory() {
@@ -951,37 +1057,110 @@
 
       playerItems.forEach((item, index) => {
         const element = document.createElement("div");
-        element.className = `slot ${selectedSlot === index ? "selected" : ""}`;
+        element.className = `slot inventory-slot ${selectedSlot === index ? "selected" : ""}`;
+        element.dataset.index = String(index);
 
-        if (item) element.innerHTML = `${itemIcons[item.type]}<small>${item.count}</small>`;
+        if (item) element.innerHTML = `${icons[item.type]}<small>${item.count}</small>`;
         else element.textContent = String(index + 1);
 
-        element.addEventListener("click", () => {
-          if (!item) {
-            selectedSlot = index;
-            renderAll();
-            showSelectedName();
-            return;
+        element.addEventListener("pointerdown", event => {
+          if (!modalOpen) return;
+          event.preventDefault();
+          clearTimeout(longPress?.timer);
+
+          longPress = {
+            index,
+            pointerId: event.pointerId,
+            startX: event.clientX,
+            startY: event.clientY,
+            split: false,
+            timer: null
+          };
+
+          if (playerItems[index]?.count > 1) {
+            longPress.timer = setTimeout(() => {
+              if (!longPress || longPress.index !== index) return;
+              splitStack(index);
+              longPress.split = true;
+            }, 3000);
           }
-
-          const size = getGridSize();
-          const emptyIndex = craftSlots.slice(0, size * size).findIndex(slot => slot === null);
-
-          if (emptyIndex === -1) {
-            notify("Сетка крафта заполнена");
-            return;
-          }
-
-          craftSlots[emptyIndex] = { type: item.type, count: 1 };
-          playerItems[index] = consumeOne(item);
-          selectedSlot = index;
-          renderAll();
-          showSelectedName();
         });
 
         grid.appendChild(element);
       });
     }
+
+    function splitStack(index) {
+      const stack = playerItems[index];
+      if (!stack || stack.count < 2) {
+        notify("Эту стопку нельзя разделить");
+        return;
+      }
+
+      const empty = playerItems.findIndex((slot, i) => !slot && i !== index);
+      if (empty === -1) {
+        notify("Нет свободного слота для разделения");
+        return;
+      }
+
+      const otherHalf = Math.floor(stack.count / 2);
+      stack.count -= otherHalf;
+      playerItems[empty] = { type: stack.type, count: otherHalf };
+      renderAll();
+      notify("Стопка разделена пополам");
+    }
+
+    function moveStack(fromIndex, toIndex) {
+      if (fromIndex === toIndex) return;
+      const from = playerItems[fromIndex];
+      if (!from) return;
+
+      const to = playerItems[toIndex];
+      if (!to) {
+        playerItems[toIndex] = from;
+        playerItems[fromIndex] = null;
+      } else if (to.type === from.type && to.count < 99) {
+        const moved = Math.min(from.count, 99 - to.count);
+        to.count += moved;
+        from.count -= moved;
+        if (from.count <= 0) playerItems[fromIndex] = null;
+      } else {
+        playerItems[fromIndex] = to;
+        playerItems[toIndex] = from;
+      }
+      renderAll();
+    }
+
+    function onInventoryPointerUp(event) {
+      if (!longPress || event.pointerId !== longPress.pointerId) return;
+
+      clearTimeout(longPress.timer);
+      const action = longPress;
+      longPress = null;
+      if (action.split) return;
+
+      const target = document.elementFromPoint(event.clientX, event.clientY);
+      const targetSlot = target?.closest?.(".inventory-slot");
+      const targetIndex = targetSlot ? Number(targetSlot.dataset.index) : action.index;
+
+      if (targetIndex !== action.index) {
+        moveStack(action.index, targetIndex);
+        return;
+      }
+
+      selectedSlot = action.index;
+      updateHeldObject(selectedType());
+      renderAll();
+      showSelectedName();
+    }
+
+    window.addEventListener("pointerup", onInventoryPointerUp);
+    window.addEventListener("pointercancel", event => {
+      if (longPress?.pointerId === event.pointerId) {
+        clearTimeout(longPress.timer);
+        longPress = null;
+      }
+    });
 
     function renderHotbar() {
       const bar = document.getElementById("hotbar");
@@ -990,49 +1169,38 @@
       for (let i = 0; i < 8; i++) {
         const element = document.createElement("div");
         element.className = `slot ${selectedSlot === i ? "selected" : ""}`;
-
         if (playerItems[i]) {
-          element.innerHTML = `${itemIcons[playerItems[i].type]}<small>${playerItems[i].count}</small>`;
+          element.innerHTML = `${icons[playerItems[i].type]}<small>${playerItems[i].count}</small>`;
         } else {
           element.textContent = String(i + 1);
         }
 
         element.addEventListener("click", () => {
           selectedSlot = i;
-          updateHeldObject(getSelectedType());
+          updateHeldObject(selectedType());
           renderAll();
           showSelectedName();
         });
-
         bar.appendChild(element);
       }
-    }
-
-    function updateButtons() {
-      const type = getSelectedType();
-      document.getElementById("placeButton").style.display =
-        type === "table" && !modalOpen && !player.dead ? "block" : "none";
-      document.getElementById("eatButton").style.display =
-        type?.startsWith("berry_") && !modalOpen && !player.dead ? "block" : "none";
     }
 
     function renderAll() {
       renderHotbar();
       renderInventory();
       renderCraftGrid();
-      updateHeldObject(getSelectedType());
-      updateButtons();
+      renderRecipeHints();
+      updateHeldObject(selectedType());
     }
 
-    function openCrafting(isWorkbench) {
+    function openCrafting(fromWorkbench) {
       modalOpen = true;
-      workbenchCrafting = isWorkbench;
+      workbenchCrafting = fromWorkbench;
       document.getElementById("panelTitle").textContent =
-        isWorkbench ? "Верстак · крафт 3×3" : "Инвентарь · крафт 2×2";
+        fromWorkbench ? "Верстак · крафт 3×3" : "Инвентарь · крафт 2×2";
       document.getElementById("craftLabel").textContent =
-        isWorkbench ? "Верстак 3×3" : "Крафт 2×2";
+        fromWorkbench ? "Верстак 3×3" : "Крафт 2×2";
       document.getElementById("modal").style.display = "flex";
-      updateButtons();
       renderAll();
     }
 
@@ -1047,42 +1215,16 @@
     document.getElementById("modal").addEventListener("click", event => {
       if (event.target.id === "modal") closeCrafting();
     });
-    document.getElementById("craftOutput").addEventListener("click", craft);
-
-    function eatSelectedBerry() {
-      if (player.dead || player.hunger >= 100) {
-        if (player.hunger >= 100) notify("Сытость уже полная");
-        return;
-      }
-
-      const item = playerItems[selectedSlot];
-      if (!item || !foodValues[item.type]) return;
-
-      const foodName = itemNames[item.type];
-      player.hunger = Math.min(100, player.hunger + foodValues[item.type]);
-      playerItems[selectedSlot] = consumeOne(item);
-
-      updateStatus();
-      renderAll();
-      notify(`Съедено: ${foodName}`);
-    }
-
-    document.getElementById("eatButton").addEventListener("click", eatSelectedBerry);
-
-    function openWorkbench(item) {
-      const distance = Math.hypot(player.x - item.root.position.x, player.z - item.root.position.z);
-      if (distance > 3.5) return;
-      openCrafting(true);
-    }
+    document.getElementById("craftOutput").addEventListener("click", craftFromMatrix);
 
     function getTarget() {
       raycaster.setFromCamera(new THREE.Vector2(0, 0), camera);
-      const objects = [
-        ...pickups.flatMap(item => item.root.children),
-        ...workbenches.flatMap(item => item.root.children)
+      const roots = [
+        ...pickups.map(item => item.root),
+        ...workbenches.map(item => item.root)
       ];
+      const hits = raycaster.intersectObjects(roots, true);
 
-      const hits = raycaster.intersectObjects(objects, true);
       for (const hit of hits) {
         const entity = hit.object.userData.entity;
         if (entity && camera.position.distanceTo(hit.point) <= 3.5) return entity;
@@ -1101,54 +1243,98 @@
 
       box.style.display = "block";
       document.getElementById("targetName").textContent = currentTarget.name;
-      document.getElementById("interact").textContent =
-        currentTarget.kind === "workbench" ? "Открыть верстак" : "Взять";
+      document.getElementById("targetHelp").textContent =
+        currentTarget.kind === "workbench"
+          ? "Нажмите кнопку руки, чтобы открыть"
+          : "Нажмите кнопку руки, чтобы взять";
     }
 
-    function interact() {
-      if (!currentTarget || modalOpen || player.dead) return;
-
-      if (currentTarget.kind === "workbench") {
-        openWorkbench(currentTarget);
-        return;
-      }
-
-      const item = currentTarget;
-      if (addItem(item.type, 1) > 0) {
-        scene.remove(item.root);
-        const index = pickups.indexOf(item);
-        if (index !== -1) pickups.splice(index, 1);
-        notify(`Подобрано: ${item.name}`);
-      }
-
-      updateTarget();
-    }
-
-    document.getElementById("interact").addEventListener("click", interact);
-
-    // Установка производится перед игроком на уровне земли.
-    document.getElementById("placeButton").addEventListener("click", () => {
-      if (getSelectedType() !== "table" || player.dead) return;
-
-      const forwardX = -Math.sin(player.yaw);
-      const forwardZ = -Math.cos(player.yaw);
-      const x = player.x + forwardX * 2.2;
-      const z = player.z + forwardZ * 2.2;
-
-      const tooClose = workbenches.some(item =>
-        Math.hypot(item.root.position.x - x, item.root.position.z - z) < 1.7
+    function collidesAt(x, z, radius = 0.4) {
+      if (Math.abs(x) > 145 || Math.abs(z) > 145) return true;
+      return obstacles.some(obstacle =>
+        Math.hypot(x - obstacle.x, z - obstacle.z) < radius + obstacle.radius
       );
+    }
 
-      if (tooClose) {
-        notify("Здесь уже стоит верстак");
-        return;
+    function tryPlaceWorkbench() {
+      const x = player.x - Math.sin(player.yaw) * 2.5;
+      const z = player.z - Math.cos(player.yaw) * 2.5;
+
+      if (Math.hypot(x - player.x, z - player.z) < 1.8) {
+        notify("Слишком близко, отойдите немного");
+        return false;
+      }
+      if (obstacles.some(obstacle =>
+        Math.hypot(x - obstacle.x, z - obstacle.z) < obstacle.radius + 1.15
+      )) {
+        notify("Здесь мешает дерево, камень или постройка");
+        return false;
       }
 
       makeWorkbench(x, z);
-      playerItems[selectedSlot] = consumeOne(playerItems[selectedSlot]);
+      playerItems[selectedSlot] = takeOne(playerItems[selectedSlot]);
       renderAll();
-      notify("Верстак поставлен. Наведите на него прицел и нажмите «Открыть верстак».");
-    });
+      notify("Верстак установлен на землю");
+      return true;
+    }
+
+    function eatSelectedBerry() {
+      const item = selectedSlot >= 0 ? playerItems[selectedSlot] : null;
+      if (!item || !berryFood[item.type]) return false;
+
+      if (player.hunger >= 100) {
+        notify("Сытость уже полная");
+        return true;
+      }
+
+      player.hunger = Math.min(100, player.hunger + berryFood[item.type]);
+      playerItems[selectedSlot] = takeOne(item);
+      updateStatus();
+      renderAll();
+      notify(`Съедена ягода: +${berryFood[item.type]} сытости`);
+      return true;
+    }
+
+    function performHandAction() {
+      if (player.dead || modalOpen) return;
+
+      const held = selectedType();
+
+      // Верстак в руке — кнопка ставит его перед игроком.
+      if (held === "table") {
+        tryPlaceWorkbench();
+        return;
+      }
+
+      // Ягода в руке — кнопка съедает одну ягоду.
+      if (held && berryFood[held]) {
+        eatSelectedBerry();
+        return;
+      }
+
+      // При наведении на верстак открыть его.
+      if (currentTarget?.kind === "workbench") {
+        openCrafting(true);
+        return;
+      }
+
+      // Иначе подобрать предмет под прицелом.
+      if (currentTarget?.kind === "pickup") {
+        const item = currentTarget;
+        if (addItem(item.type, 1) > 0) {
+          scene.remove(item.root);
+          const index = pickups.indexOf(item);
+          if (index !== -1) pickups.splice(index, 1);
+          notify(`Подобрано: ${item.name}`);
+        }
+        updateTarget();
+        return;
+      }
+
+      notify("Наведитесь на предмет или выберите ягоду/верстак");
+    }
+
+    document.getElementById("handButton").addEventListener("click", performHandAction);
 
     document.getElementById("jump").addEventListener("pointerdown", event => {
       event.preventDefault();
@@ -1158,7 +1344,7 @@
       }
     });
 
-    // Динамический джойстик на всей левой четверти экрана.
+    // Джойстик появляется под пальцем по всей левой четверти.
     const joystick = document.getElementById("joystick");
     const stick = document.getElementById("stick");
     const joy = { id: null, cx: 0, cy: 0, x: 0, y: 0, radius: 55 };
@@ -1198,13 +1384,10 @@
       joystick.style.display = "none";
     }
 
-    let lookPointer = null;
-    let lastX = 0;
-    let lastY = 0;
+    let lookPointer = null, lastX = 0, lastY = 0;
 
     renderer.domElement.addEventListener("pointerdown", event => {
       if (startJoystick(event)) return;
-
       if (event.clientX > leftZoneWidth() && !modalOpen && !player.dead) {
         lookPointer = event.pointerId;
         lastX = event.clientX;
@@ -1241,15 +1424,13 @@
         player.vy = 6.2;
         player.grounded = false;
       }
-
       if (/^Digit[1-8]$/.test(event.code)) {
         selectedSlot = Number(event.code.slice(-1)) - 1;
-        updateHeldObject(getSelectedType());
+        updateHeldObject(selectedType());
         renderAll();
         showSelectedName();
       }
-
-      if (event.code === "KeyE") eatSelectedBerry();
+      if (event.code === "KeyE") performHandAction();
       if (event.code === "Escape" && modalOpen) closeCrafting();
     });
     window.addEventListener("keyup", event => keys[event.code] = false);
@@ -1259,17 +1440,12 @@
       player.dead = true;
       document.getElementById("deadScreen").style.display = "flex";
       document.getElementById("targetBox").style.display = "none";
-      updateButtons();
     }
 
-    document.getElementById("restartButton").addEventListener("click", () => {
-      location.reload();
-    });
+    document.getElementById("restartButton").addEventListener("click", () => location.reload());
 
     function updateSurvival(dt) {
       hungerTimer += dt;
-
-      // Сытость постепенно убывает примерно за 3 минуты.
       if (hungerTimer >= 2.4) {
         player.hunger = Math.max(0, player.hunger - 1);
         hungerTimer = 0;
@@ -1308,7 +1484,7 @@
       let moving = false;
 
       if (!modalOpen && !player.dead) {
-        // Толкание джойстика вверх — движение вперёд по направлению камеры.
+        // Вверх по джойстику — вперёд относительно направления камеры.
         let forward = -joy.y;
         let strafe = joy.x;
 
@@ -1324,18 +1500,21 @@
         }
 
         moving = length > 0.05;
-        const speed = 5.2;
+
         const forwardX = -Math.sin(player.yaw);
         const forwardZ = -Math.cos(player.yaw);
         const rightX = Math.cos(player.yaw);
         const rightZ = -Math.sin(player.yaw);
+        const speed = 5.2;
+        const nextX = player.x + (forwardX * forward + rightX * strafe) * speed * dt;
+        const nextZ = player.z + (forwardZ * forward + rightZ * strafe) * speed * dt;
 
-        player.x += (forwardX * forward + rightX * strafe) * speed * dt;
-        player.z += (forwardZ * forward + rightZ * strafe) * speed * dt;
+        // Проверка столкновений с деревьями, большими камнями и верстаками.
+        if (!collidesAt(nextX, player.z)) player.x = nextX;
+        if (!collidesAt(player.x, nextZ)) player.z = nextZ;
 
         player.vy -= 17 * dt;
         player.y += player.vy * dt;
-
         if (player.y <= 0) {
           player.y = 0;
           player.vy = 0;
@@ -1355,7 +1534,7 @@
       camera.aspect = innerWidth / innerHeight;
       camera.updateProjectionMatrix();
       renderer.setSize(innerWidth, innerHeight);
-      renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+      renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5));
     }
 
     window.addEventListener("resize", resize);
