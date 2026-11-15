@@ -305,7 +305,7 @@
               <div id="avatarLegs"></div>
             </div>
             <div class="craftLabel">Броня</div>
-            <div id="armorSlot" class="slot">+</div>
+            <div id="armorSlot" class="slot">＋</div>
             <div id="armorText">Перетащите броню сюда</div>
           </section>
         </div>
@@ -390,11 +390,11 @@
     let toastTimer, nameTimer, longPress;
     let hungerTimer = 0, starvationTimer = 0, walkTime = 0, pantTimer = 0, damageFlashTimer = 0;
     let lastToolUse = 0, swingUntil = 0;
-    let handHoldTimer = null, handHoldActive = false, ignoreHandClick = false;
+    let handHoldTimer = null, ignoreHandClick = false;
 
-    const neonBox = new THREE.Box3Helper(new THREE.Box3(), new THREE.LineBasicMaterial({
-      color: 0xe9fff0, transparent: true, opacity: .95
-    }));
+    const neonBox = new THREE.Box3Helper(new THREE.Box3(), 0xe9fff0);
+    neonBox.material.transparent = true;
+    neonBox.material.opacity = 0.95;
     neonBox.visible = false;
     scene.add(neonBox);
 
@@ -618,7 +618,6 @@
     for(let i=0;i<75;i++){const [x,z]=randomPoint(9);makePickup(berryTypes[i%3],x,z);}
     for(let i=0;i<18;i++){const [x,z]=randomPoint(12);makeSheep(x,z,i%2===0);}
 
-    // Начальный маленький топор.
     inventory[0]=createItem("small_axe");
 
     const viewModel=new THREE.Group();
@@ -829,13 +828,12 @@
     }
     function equipArmor(index){
       const item=inventory[index];
-      const armorSlot=document.getElementById("armorSlot");
       if(item?.type==="bone_armor"){
         inventory[index]=null;player.armor=true;
       }else if(player.armor){
         if(!canFit("bone_armor",1)){notify("Нет места для брони");return;}
         player.armor=false;addItem("bone_armor",1);
-      }else return;
+      } else return;
       renderAll();
     }
     document.getElementById("armorSlot").addEventListener("click",()=>{
@@ -961,15 +959,10 @@
     function damageTool(slotIndex){
       const item=inventory[slotIndex];if(!item||item.durability==null)return;
       item.durability--;
-      if(item.durability<=0){
-        inventory[slotIndex]=null;
-        notify("Инструмент сломался");
-      }
+      if(item.durability<=0){inventory[slotIndex]=null;notify("Инструмент сломался");}
       renderAll();
     }
-    function swingAnimation(){
-      swingUntil=performance.now()+240;
-    }
+    function swingAnimation(){ swingUntil=performance.now()+240; }
     function makeCarcass(animal){
       const root=new THREE.Group();root.position.copy(animal.root.position);
       const body=new THREE.Mesh(new THREE.SphereGeometry(.55,12,9),new THREE.MeshStandardMaterial({color:0xbdb6a9}));
@@ -1031,7 +1024,7 @@
         if(held==="hammer"){
           scene.remove(currentTarget.root);removeObstacle(currentTarget);
           workbenches.splice(workbenches.indexOf(currentTarget),1);
-          inventory[selectedSlot]=null;addItem("table",1);damageTool(selectedSlot);
+          inventory[selectedSlot]=null;addItem("table",1);
           notify("Верстак разобран");return;
         }
         openCrafting(true);return;
@@ -1080,21 +1073,16 @@
     const handButton=document.getElementById("handButton");
     handButton.addEventListener("pointerdown",event=>{
       event.preventDefault();currentTarget=getTarget();
-      handHoldActive=false;
       if(currentTarget?.kind==="carcass"){
         handHoldTimer=setTimeout(()=>{
           if(currentTarget?.kind==="carcass"){
-            handHoldActive=true;ignoreHandClick=true;butcher(currentTarget);
+            ignoreHandClick=true;butcher(currentTarget);
           }
         },900);
       }
     });
-    handButton.addEventListener("pointerup",()=>{
-      if(handHoldTimer){clearTimeout(handHoldTimer);handHoldTimer=null;}
-    });
-    handButton.addEventListener("pointercancel",()=>{
-      if(handHoldTimer){clearTimeout(handHoldTimer);handHoldTimer=null;}
-    });
+    handButton.addEventListener("pointerup",()=>{ if(handHoldTimer){clearTimeout(handHoldTimer);handHoldTimer=null;} });
+    handButton.addEventListener("pointercancel",()=>{ if(handHoldTimer){clearTimeout(handHoldTimer);handHoldTimer=null;} });
     handButton.addEventListener("click",()=>{
       if(ignoreHandClick){ignoreHandClick=false;return;}
       doHandAction();
